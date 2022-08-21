@@ -41,8 +41,6 @@ class User(AbstractUser):
         "core.UserPhoneNumber",
         on_delete=models.PROTECT,
         related_name='user',
-        blank=True,
-        null=True
     )
     USERNAME_FIELD  = 'username'
     REQUIRED_FIELDS = ['first_name', 'last_name']
