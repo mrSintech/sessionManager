@@ -10,11 +10,11 @@ class User(AbstractUser):
     """
     username        = models.CharField(max_length = 50, blank = True, null = True, unique = True)
     email           = models.EmailField(('email address'), unique = True)
-    # phone_no        = models.OneToOneField(
-    #     "authentication.UserPhoneNumber",
-    #     on_delete=models.PROTECT,
-    #     related_name='user',
-    # )
+    phone_no        = models.OneToOneField(
+        "authentication.UserPhoneNumber",
+        on_delete=models.PROTECT,
+        related_name='user',
+    )
     USERNAME_FIELD  = 'username'
     REQUIRED_FIELDS = ['first_name', 'last_name']
     

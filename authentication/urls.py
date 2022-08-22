@@ -10,6 +10,8 @@ router = routers.DefaultRouter()
 
 router.register('test', views.Test, 'test')
 
+router.register('login', views.UserLogin, 'login')
+
 app_name = 'auth_api'
 urlpatterns = [
     path('', include(router.urls)),
