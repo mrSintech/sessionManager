@@ -8,7 +8,9 @@ from . import views
 
 router = routers.DefaultRouter()
 
-app_name = 'core_api'
+router.register('test', views.Test, 'test')
+
+app_name = 'auth_api'
 urlpatterns = [
     path('', include(router.urls)),
 ]
