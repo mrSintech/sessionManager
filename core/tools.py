@@ -1,8 +1,11 @@
 """
     Handy Tools
 """
+import json
 import string
 import random
+import datetime
+import jdatetime
 
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import User
@@ -32,6 +35,16 @@ class JwtTools(RefreshToken):
         return data
     
 # =-=-=-=-=-=-=-=-=- Functions -=-=-=-=-=-=-=-=-=-=-= #
+def georgian_to_persian(date, kind='obj'):
+    timestmp = datetime.datetime.timestamp(date)
+    jalili_date  = jdatetime.datetime.fromtimestamp(timestmp)
+    
+    if kind == 'josn':
+        jalili_date = json.dumps(jalili_date, indent=4, sort_keys=True, default=str)
+        jalili_date = json.loads(jalili_date)
+    
+    return jalili_date
+
 def response_prepare(msg_container, success, data):
     # Preparing messages for app response
     if msg_container == None:

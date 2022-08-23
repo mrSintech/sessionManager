@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'authentication.apps.AuthenticationConfig',
     'phonenumber_field',
-    # 'nativeApps.rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -68,7 +67,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(weeks=10),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=10),
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=7),
 }
 
@@ -100,7 +99,7 @@ DATABASES = {
         'NAME': 'session_manager_core',
         'USER': 'web_api',
         'PASSWORD': 'safepass',
-        'HOST': 'localhost',
+        'HOST': '188.121.121.112',
         'PORT': '5432',
     }
 }
