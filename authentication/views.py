@@ -10,7 +10,7 @@ from rest_framework.permissions import (
 )
 
 # Dependencies
-from rest_framework_simplejwt.views import TokenObtainPairView
+from django.contrib.sessions.models import Session
 
 # Models
 from .models import *
@@ -110,5 +110,53 @@ class UserLogin(viewsets.ViewSet):
         # Fail
         res = response_prepare(messages, False, None)
         return Response(res)
-        
+      
+class LoginVerify(viewsets.ViewSet):
+    permission_classes = [AllowAny,]
     
+    def create(self, request):
+        is_valid = True
+        messages = []
+        
+        # Gathering data
+        token = request.POST.get('token')
+        code = request.POST.get('code')
+        
+        # Validating Data
+        if is_empty(token) or is_empty(code):
+            is_valid = False
+            messages.append(validation_msg.SomethingWentWrong)
+            
+        if is_valid:
+            # Unpack Session
+            try:
+                token_obj = Session.objects.get(pk=token)
+                token_data = token_obj.get_decoded()
+
+            except ObjectDoesNotExist:
+                is_valid = False
+                messages.append(validation_msg.LoginTokenExpired)
+                
+            if is_valid:
+                if code != token_data['login_token']['sms_code']:
+                    is_valid = False
+                    messages.append(validation_msg.LoginIncorrectCode)
+                    
+                if is_valid:
+                    # delete session obj after successful login
+                    token_obj.delete()
+                    
+                    # declare tokens and serialize
+                    jwt = token_data['login_token']['login']
+                    raw_data = json.dumps(jwt)
+                    json_data = json.loads(raw_data)
+                    
+                    # SUCCESS
+                    messages.append(validation_msg.LoginSuccesful)
+                    res = response_prepare(messages, True, json_data)
+                    return Response(res)
+                
+            
+        # FAIL
+        res = response_prepare(messages, False, None)
+        return Response(res)
