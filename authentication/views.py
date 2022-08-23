@@ -58,6 +58,7 @@ class UserLogin(viewsets.ViewSet):
         messages = []
 
         # Receive and validate number
+        return Response(request.POST)
         number = request.POST.get('number')
         if is_empty(number): # check if number is empty
             is_valid = False
