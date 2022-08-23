@@ -93,11 +93,11 @@ class UserLogin(viewsets.ViewSet):
                 send_auth_sms.delay(number, code)
                 
                 # data serialize
-                data = [{
+                data = {
                     'username' : user.username,
                     'phonenumber' : number,
                     'token' : session_key
-                },]
+                }
                 raw_data = json.dumps(data)
                 json_data = json.loads(raw_data)
                      
