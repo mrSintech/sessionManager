@@ -7,6 +7,9 @@ from rest_framework.permissions import (
     IsAdminUser
 )
 
+# Dependencies
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 # Models
 from .models import *
 
@@ -21,6 +24,7 @@ from core import validation_msg
 from core.tools import (
     is_empty,
     validate_phonenumber,
+    JwtTools,
 )
 
 # Dev tools
@@ -55,11 +59,12 @@ class UserLogin(viewsets.ViewSet):
                 is_valid = False
                 messages.append(validation_msg.WrongPhoneNumber)
         
-        
+        if is_valid:
+            
+            user = UserPhoneNumber.objects.get(number=number).user
+            token = JwtTools.generate_jwt(user)
+            print(token)
+            
         return HttpResponse(number)
         
-        
-        
-        
-            
     

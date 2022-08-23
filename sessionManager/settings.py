@@ -10,8 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-from pathlib import Path
 import os
+import datetime
+from pathlib import Path
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'authentication.apps.AuthenticationConfig',
     'phonenumber_field',
+    # 'nativeApps.rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +60,17 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'sessionManager.urls'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication'
+    ],
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(weeks=10),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=7),
+}
 
 TEMPLATES = [
     {

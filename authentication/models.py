@@ -4,12 +4,15 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 
+# Dependencies
+
+
 class User(AbstractUser):
     """
         main user model
     """
     username        = models.CharField(max_length = 50, blank = True, null = True, unique = True)
-    email           = models.EmailField(('email address'), unique = True)
+    email           = models.EmailField(unique = True)
     phone_no        = models.OneToOneField(
         "authentication.UserPhoneNumber",
         on_delete=models.PROTECT,
@@ -24,7 +27,9 @@ class User(AbstractUser):
 
 class UserPhoneNumber(models.Model):
     """"""
-    number = PhoneNumberField()
+    
+    country_code = models.CharField(max_length=4)
+    number = models.CharField(max_length=10, db_index=True)
     
     def __str__(self):
         return "{}".format(self.number)
