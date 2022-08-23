@@ -1,11 +1,19 @@
 """
     Handy Tools
 """
+import string
+import random
+
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import User
 
 # Auth
 from rest_framework_simplejwt.tokens import RefreshToken
+
+# Session
+from django.contrib.sessions.backends.db import SessionStore
+from django.contrib.sessions.models import Session
+
 
 # =-=-=-=-=-=-=-=-=- Classes -=-=-=-=-=-=-=-=-=-=-= #
 class JwtTools(RefreshToken):
@@ -22,11 +30,40 @@ class JwtTools(RefreshToken):
         data["access"] = str(token.access_token)
         
         return data
-
     
+# =-=-=-=-=-=-=-=-=- Functions -=-=-=-=-=-=-=-=-=-=-= #
+def response_prepare(msg_container, success, data):
+    # Preparing messages for app response
+    if msg_container == None:
+        msg = None
+    
+    else:
+        msg = ''
+        for item in msg_container:
+            msg = str(msg)+str(item)+'\n'
         
+    res = {
+        'success'  : success,
+        'messages' : msg,
+        'data'     : data
+    }
     
-# =-=-=-=-=-=-=-=-=- Functions -=-=-=-=-=-=-=-=-=-=-= #    
+    return res
+
+def create_session_token(data):
+    # Generate Token
+    s = SessionStore()
+    s['login_token'] = data
+    s.create()
+    session_key = s.session_key
+    # s = SessionStore(session_key=s.session_key)
+
+    return session_key
+
+def random_code_generator(str_length=6):
+    lettersAndDigits = string.digits
+    return ''.join(random.sample(lettersAndDigits, str_length))
+ 
 def is_empty(data):
     # check if variable is empty
     if data == '' \
