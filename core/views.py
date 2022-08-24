@@ -17,12 +17,23 @@ class UserRoomReserveViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated,]
     
     def list(self, request):
-        # Gathering some data
+        # Gathering data
         user     = request.user
         reserves = user.reserves.order_by('-execute_datetime')
         
         serializer = ReserveSerializer(reserves, many=True)
         
         return Response(serializer.data)
+    
+class RoomViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated,]
+    
+    def list(self, request):
+        # Gathering data
+        rooms = SessionRoom.actives.all()
+        serializer = RoomDetailSerializer(rooms, many=True)
+        
+        return Response(serializer.data)
+        
         
             

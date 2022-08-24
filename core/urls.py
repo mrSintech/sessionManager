@@ -9,6 +9,7 @@ from . import views
 router = routers.DefaultRouter()
 
 router.register('reserve', views.UserRoomReserveViewSet, 'reserve')
+router.register('room',    views.RoomViewSet,            'room')
 
 app_name = 'core_api'
 urlpatterns = [

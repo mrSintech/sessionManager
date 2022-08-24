@@ -7,8 +7,9 @@ import random
 import datetime
 import jdatetime
 
-from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth.models import User
+# RestFramework
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 
 # Auth
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -17,6 +18,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
 
+# Dependencies
+from django.views.static import serve
+from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth.models import User
 
 # =-=-=-=-=-=-=-=-=- Classes -=-=-=-=-=-=-=-=-=-=-= #
 class JwtTools(RefreshToken):
@@ -35,6 +40,18 @@ class JwtTools(RefreshToken):
         return data
     
 # =-=-=-=-=-=-=-=-=- Functions -=-=-=-=-=-=-=-=-=-=-= #
+@api_view(['GET'])
+@permission_classes([AllowAny,])
+def public_media_access(request, url, document_root=None, show_indexes=False):
+
+    url = 'public/'+url
+    return serve(
+        request, 
+        url, 
+        document_root, 
+        show_indexes
+    )
+
 def georgian_to_persian(date, kind='obj'):
     timestmp = datetime.datetime.timestamp(date)
     jalili_date  = jdatetime.datetime.fromtimestamp(timestmp)
