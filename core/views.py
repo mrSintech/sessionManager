@@ -19,7 +19,7 @@ class UserRoomReserveViewSet(viewsets.ViewSet):
     def list(self, request):
         # Gathering some data
         user     = request.user
-        reserves = user.reserves
+        reserves = user.reserves.order_by('-execute_datetime')
         
         serializer = ReserveSerializer(reserves, many=True)
         
