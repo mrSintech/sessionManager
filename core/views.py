@@ -96,7 +96,7 @@ class RoomViewSet(viewsets.ViewSet):
             end = end.astimezone(tz=tz).replace(tzinfo=None)
             
             user = request.user
-            
+            room = SessionRoom.actives.get(id=room)
             reserve = Reserve(
                 reservatore=user,
                 room=room,
