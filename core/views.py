@@ -96,7 +96,7 @@ class RoomViewSet(viewsets.ViewSet):
             end = end.astimezone(tz=tz).replace(tzinfo=None)
             
             # calculate duration
-            duration = (end - start).total_hours()
+            duration = (end - start).total_seconds() / 3600
             
             user = request.user
             room = SessionRoom.actives.get(id=room)
