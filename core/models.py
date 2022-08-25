@@ -29,6 +29,14 @@ class Reserve(models.Model):
         related_name='reserves' 
     )
     
+    departman = models.ForeignKey(
+        'authentication.Departman', 
+        on_delete=models.PROTECT,
+        related_name='reserves',
+        blank=True,
+        null=True
+    )
+    
     room = models.ForeignKey(
         'core.SessionRoom',
         on_delete=models.PROTECT,
@@ -49,6 +57,14 @@ class Reserve(models.Model):
     def __str__(self):
         return "{} | {}".format(self.execute_datetime, self.reservatore.first_name, self.reservatore.first_name)
     
+    def assign_departman():
+        departman = self.reservatore.departman
+        self.departman = departman
+    
+    def save(self, *args, **kwargs):
+        self.assign_departman()
+        super(Reserve, self).save(*args, **kwargs)
+    
 class SessionRoom(models.Model):
     """
         Physical session room data
@@ -56,24 +72,34 @@ class SessionRoom(models.Model):
     # room control
     is_active   = models.BooleanField(default=True)
     
-    # pics
-    
     title       = models.CharField(max_length=256)
-    capacity    = models.IntegerField() # Persons
-    
-    # Fetures
-    has_heater    = models.BooleanField(default=False)
-    has_cooler    = models.BooleanField(default=False)
-    has_projector = models.BooleanField(default=False)
-    # ...
+    capacity    = models.IntegerField() # persons
     
     date_created = models.DateTimeField(auto_now_add=True)
     
     objects  = models.Manager()
     actives  = RoomActiveManager()
     
+    # pics -> RoomPic
+    # info -> RoomInfo
+    
     def __str__(self):
         return self.title
+
+class RoomInfo(models.Model):
+    room = models.ForeignKey(
+        'core.SessionRoom',           
+        on_delete=models.CASCADE,
+        related_name='info'
+    )
+    
+    key   = models.CharField(max_length=50)
+    value = models.CharField(max_length=50)
+    
+    date_created = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return "{} - {} - {}".format(self.id, self.key, self.room.title)
 
 # Room Pics
 def public_room_pic_path_generator(instance, filename):
@@ -82,7 +108,7 @@ def public_room_pic_path_generator(instance, filename):
         str(instance.room.id), 
         filename
     )
-    
+
 class RoomPic(models.Model):
     room = models.ForeignKey(
         'core.SessionRoom', 
@@ -104,6 +130,7 @@ class RoomPic(models.Model):
         return self.room.title
     
     def resize_pic(self):
+        # TODO: Refactor
         if self.pic: 
             try:
                 DJANGO_TYPE = self.pic.file.content_type 
@@ -142,8 +169,7 @@ class RoomPic(models.Model):
                 pass
         return True
         
-    
-    # Generate thumbnail for profile photo
+    # Generate thumbnail for room photo
     def make_thumbnail(self):
         if self.pic: 
             try:
