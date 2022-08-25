@@ -17,4 +17,10 @@ class Migration(migrations.Migration):
             field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
             preserve_default=False,
         ),
+        migrations.AddField(
+            model_name='reserve',
+            name='title',
+            field=models.CharField(default='tst', max_length=255),
+            preserve_default=False,
+        ),
     ]

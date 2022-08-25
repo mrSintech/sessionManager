@@ -102,9 +102,12 @@ class RoomViewSet(viewsets.ViewSet):
             # check reserve time
             reserve_conflics = Reserve.objects.filter(
                 execute_datetime__gt=start,
-                
+                end_datetime__lt=end
             )
             
+            ser = ReserveSerializer(reserve_conflics, many=True)
+            return Response(ser)
+        
             # calculate duration
             duration = (end - start).total_seconds() / 3600
             
@@ -114,6 +117,7 @@ class RoomViewSet(viewsets.ViewSet):
                 reservatore=user,
                 room=room,
                 execute_datetime=start,
+                end_datetime=end,
                 duration=duration
             )
             reserve.save()
