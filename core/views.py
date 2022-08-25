@@ -65,6 +65,6 @@ class RoomViewSet(viewsets.ViewSet):
         #     messages.append(session.title)
         
         res = tools.response_prepare(messages, True, None)
-        return Response()
+        return Response(res)
         
             
