@@ -20,8 +20,17 @@ class RoomPicSerializer(serializers.ModelSerializer):
             'pic_thumbnail'
         ]
         
+class SessionRoomInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = RoomInfo
+        fields = [
+            'key',
+            'value'
+        ]
+        
 class SessionRoomDemoSerializer(serializers.ModelSerializer):
     pics = RoomPicSerializer(many=True)
+    info = SessionRoomInfoSerializer(many=True)
     
     class Meta:
         model  = SessionRoom
