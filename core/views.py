@@ -80,6 +80,10 @@ class RoomViewSet(viewsets.ViewSet):
         end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
         end = end.astimezone(tz=tz)
         
+        messages.append(title)
+        messages.append(start)
+        messages.append(end)
+        
         res = tools.response_prepare(messages, True, None)
         return Response(res)
         
