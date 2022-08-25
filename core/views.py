@@ -53,7 +53,7 @@ class RoomViewSet(viewsets.ViewSet):
     def create(self, request):
         is_valid = True
         messages = []
-        messages.append(request.POST)
+        messages.append(str(request.POST))
         try:
             sessions = request.POST['session']
             sessions = json.loads(sessions)
