@@ -75,7 +75,7 @@ class RoomViewSet(viewsets.ViewSet):
              
         start = start.split('.')
         start = datetime.datetime.strptime(start[0], "%Y-%m-%dT%H:%M:%S")
-        start = start.astimezone(tz=india_tz)
+        # start = start.astimezone(tz=india_tz)
         start = timezone.make_naive(start)
         
         end = end.split('.')
