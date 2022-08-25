@@ -95,13 +95,16 @@ class RoomViewSet(viewsets.ViewSet):
             end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
             end = end.astimezone(tz=tz).replace(tzinfo=None)
             
+            # calculate duration
+            duration = end - start
+            
             user = request.user
             room = SessionRoom.actives.get(id=room)
             reserve = Reserve(
                 reservatore=user,
                 room=room,
                 execute_datetime=start,
-                duration=2
+                duration=duration
             )
             reserve.save()
             
