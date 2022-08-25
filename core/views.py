@@ -74,8 +74,8 @@ class RoomViewSet(viewsets.ViewSet):
         india_tz = pytz.timezone('Asia/Kolkata')
              
         start = timezone.make_naive(start)
-        start = datetime.datetime.strptime(start, "%Y-%m-%dT%H:%M:%S")
-        start = start.astimezone(tz=india_tz)
+        # start = datetime.datetime.strptime(start, "%Y-%m-%dT%H:%M:%S")
+        # start = start.astimezone(tz=india_tz)
         
         end = end.split('.')
         end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
