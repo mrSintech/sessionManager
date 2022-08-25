@@ -76,10 +76,11 @@ class RoomViewSet(viewsets.ViewSet):
         start = start.split('.')
         start = datetime.datetime.strptime(start[0], "%Y-%m-%dT%H:%M:%S")
         start = start.astimezone(tz=india_tz)
+        start = timezone.make_aware(start)
         
         end = end.split('.')
         end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
-        end = end.replace(tzinfo=timezone.utc).astimezone(tz=india_tz)
+        end = end.astimezone(tz=india_tz)
 
         messages.append(title)
         messages.append(start)
