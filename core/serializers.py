@@ -56,14 +56,13 @@ class SessionRoomReservesSerializer(serializers.ModelSerializer):
     
     def get_start(self, obj):
         date = obj.execute_datetime
-        date = date.replace(tzinfo=timezone.utc).astimezone(tz=self.tz)
+        # date = date.replace(tzinfo=timezone.utc).astimezone(tz=self.tz)
         return date
     
     def get_end(self, obj):
         session_date = obj.execute_datetime
         duration = obj.duration
         end_date = session_date + datetime.timedelta(hours=duration)
-        end_date = end_date.replace(tzinfo=timezone.utc).astimezone(tz=self.tz)
         return end_date
     
     class Meta:

@@ -1,3 +1,5 @@
+import json
+
 # Rest Framework
 from rest_framework.response import Response
 from rest_framework import viewsets, status
@@ -15,6 +17,10 @@ from .serializers import *
 
 # Tools
 from django.utils import timezone
+
+# Exceptions
+from django.utils.datastructures import MultiValueDictKeyError
+from django.core.exceptions import ObjectDoesNotExist
 
 class UserRoomReserveViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated,]
@@ -44,9 +50,19 @@ class RoomViewSet(viewsets.ViewSet):
         return Response(serializer.data)
    
     def create(self, request):
-        reserve = Reserve.objects.get(id=3).execute_datetime
-        date = timezone.make_naive(reserve)
-        print(date)
-        return Response(request.POST)
+        is_valid = True
+        messages = []
+        
+        try:
+            sessions = request.POST['session']
+            sessions = json.loads(sessions)
+            
+        except MultiValueDictKeyError:
+            pass
+        
+        for session in sessions:
+            messages.append(session.title)
+        
+        return Response(messages)
         
             
