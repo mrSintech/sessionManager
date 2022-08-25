@@ -79,6 +79,7 @@ class RoomViewSet(viewsets.ViewSet):
         end = end.split('.')
         end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
         end = end.astimezone(tz=tz)
+        end = end.replace(tzinfo=None)
         
         messages.append(title)
         messages.append(start)
