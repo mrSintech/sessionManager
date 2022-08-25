@@ -1,4 +1,5 @@
 import json
+import pytz
 
 # Rest Framework
 from rest_framework.response import Response
@@ -53,10 +54,10 @@ class RoomViewSet(viewsets.ViewSet):
     def create(self, request):
         is_valid = True
         messages = []
-        # messages.append(str(request.POST))
+        
         try:
             sessions = request.POST['session']
-            # messages.append(sessions[0])
+            
         except MultiValueDictKeyError:
             pass
         
@@ -67,6 +68,13 @@ class RoomViewSet(viewsets.ViewSet):
             
             except KeyError:
                 messages.append(session['title'])
+                title = session['title']
+                start = session['start']
+                end   = session['end']
+        
+        tz    = pytz.timezone('Asia/Kolkata')
+        start = start.replace(tzinfo=tz).astimezone(tz=timezone.utc)
+        messages.append(start)
         
         res = tools.response_prepare(messages, True, None)
         return Response(res)
