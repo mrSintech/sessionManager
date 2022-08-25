@@ -124,9 +124,14 @@ class RoomViewSet(viewsets.ViewSet):
                     )
                 )
             )
+            # check not reserve in past
+            
+            # check reserve duration limit
+            
+            # check day of reserve be close
             
             ser = ReserveSerializer(reserve_conflics, many=True)
-            return Response(ser.data)
+            return Response({'t': len(reserve_conflics)})
         
             # calculate duration
             duration = (end - start).total_seconds() / 3600
