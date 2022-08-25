@@ -52,9 +52,9 @@ class Reserve(models.Model):
         ]
     )
     execute_datetime = models.DateTimeField()
+    end_datetime = models.DateTimeField()
     
     date_created = models.DateTimeField(auto_now_add=True)
-    
     
     def __str__(self):
         return "{} | {}".format(self.execute_datetime, self.reservatore.first_name, self.reservatore.first_name)

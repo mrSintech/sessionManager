@@ -12,6 +12,8 @@ from rest_framework.permissions import (
 
 # Models
 from .models import *
+from django.db.models import Q
+
 
 # Serializers
 from .serializers import *
@@ -60,7 +62,7 @@ class RoomViewSet(viewsets.ViewSet):
         
         # Gather data
         try:
-            sessions = request.POST['session']
+            reserves = request.POST['session']
             room     = request.POST['room']
             
         except MultiValueDictKeyError:
@@ -69,19 +71,21 @@ class RoomViewSet(viewsets.ViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
+        room = SessionRoom.actives.get(id=room)
+        
         # load json
-        sessions = json.loads(sessions)
+        reserves = json.loads(reserves)
         
         # check for new session
         is_valid = False
-        for session in sessions:
+        for reserve in reserves:
             try:
                 session['id']
             
             except KeyError:
-                title = session['title']
-                start = session['start']
-                end   = session['end']
+                title = reserve['title']
+                start = reserve['start']
+                end   = reserve['end']
                 is_valid = True
         
         if is_valid:
@@ -95,11 +99,16 @@ class RoomViewSet(viewsets.ViewSet):
             end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
             end = end.astimezone(tz=tz).replace(tzinfo=None)
             
+            # check reserve time
+            reserve_conflics = Reserve.objects.filter(
+                execute_datetime__gt=start,
+                
+            )
+            
             # calculate duration
             duration = (end - start).total_seconds() / 3600
             
             user = request.user
-            room = SessionRoom.actives.get(id=room)
             reserve = Reserve(
                 title=title,
                 reservatore=user,
@@ -108,13 +117,13 @@ class RoomViewSet(viewsets.ViewSet):
                 duration=duration
             )
             reserve.save()
-            
+                        
             res = tools.response_prepare(messages, True, None)
             return Response(res)
         
         else: # no reserve date selected
             messages.append(validation_msg.ReserveNoDateSelected) 
         
-    # FAIL
+        # FAIL
         res = tools.response_prepare(messages, False, None)
         return Response(res)
