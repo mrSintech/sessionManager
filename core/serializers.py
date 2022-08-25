@@ -1,6 +1,7 @@
 import jdatetime
 import datetime
 import json
+import pytz
 
 # RestFramework
 from rest_framework import serializers
@@ -45,6 +46,7 @@ class SessionRoomDemoSerializer(serializers.ModelSerializer):
         ]
    
 class SessionRoomReservesSerializer(serializers.ModelSerializer):
+    tz    = pytz.timezone('Asia/Kolkata')
     title = serializers.SerializerMethodField()
     start = serializers.SerializerMethodField()
     end   = serializers.SerializerMethodField()
@@ -54,14 +56,14 @@ class SessionRoomReservesSerializer(serializers.ModelSerializer):
     
     def get_start(self, obj):
         date = obj.execute_datetime
-        date = timezone.make_naive(date)
+        date = date.replace(tzinfo=timezone.utc).astimezone(tz=self.tz)
         return date
     
     def get_end(self, obj):
         session_date = obj.execute_datetime
         duration = obj.duration
         end_date = session_date + datetime.timedelta(hours=duration)
-        end_date = timezone.make_naive(end_date)
+        end_date = end_date.replace(tzinfo=timezone.utc).astimezone(tz=self.tz)
         return end_date
     
     class Meta:
