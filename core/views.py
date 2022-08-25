@@ -106,12 +106,14 @@ class RoomViewSet(viewsets.ViewSet):
                     Q(execute_datetime__date=start.date())
                 ) &
                 (
-                    Q(execute_datetime__lt=end) &
-                    Q(end_datetime__gt=end)
-                ) |
-                (
-                    Q(execute_datetime__lt=start) &
-                    Q(end_datetime__gt=start)
+                    (
+                        Q(execute_datetime__lt=end) &
+                        Q(end_datetime__gt=end)
+                    ) |
+                    (
+                        Q(execute_datetime__lt=start) &
+                        Q(end_datetime__gt=start)
+                    )
                 )
             )
             
