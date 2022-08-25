@@ -102,12 +102,12 @@ class RoomViewSet(viewsets.ViewSet):
             # check reserve time
             reserve_conflics = Reserve.objects.filter(
                 (
-                    Q(execute_datetime__gt=end) &
-                    Q(end_datetime__lt=end)
+                    Q(execute_datetime__lt=end) &
+                    Q(end_datetime__gt=end)
                 ) |
                 (
-                    Q(execute_datetime__lt=start) &
-                    Q(end_datetime__gt=start)
+                    Q(execute_datetime__gt=start) &
+                    Q(end_datetime__lt=start)
                 )
             )
             
