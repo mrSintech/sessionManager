@@ -74,8 +74,8 @@ class RoomViewSet(viewsets.ViewSet):
                 
         start = start.split('.')
         start = datetime.datetime.strptime(start[0], "%Y-%m-%dT%H:%M:%S")
-        # tz    = pytz.timezone('Asia/Kolkata')
-        # start = start.astimezone(tz=timezone.utc)
+        tz    = pytz.timezone('Asia/Kolkata')
+        start = start.astimezone(tz=timezone.utc)
         messages.append(start)
         
         res = tools.response_prepare(messages, True, None)
