@@ -62,7 +62,7 @@ class RoomViewSet(viewsets.ViewSet):
         
         sessions = json.loads(sessions)
         for session in sessions:
-            messages.append(session['title'])
+            session['title2']
         
         res = tools.response_prepare(messages, True, None)
         return Response(res)
