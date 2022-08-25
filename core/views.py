@@ -67,7 +67,6 @@ class RoomViewSet(viewsets.ViewSet):
                 session['id']
             
             except KeyError:
-                messages.append(session['start'])
                 title = session['title']
                 start = session['start']
                 end   = session['end']
@@ -75,7 +74,7 @@ class RoomViewSet(viewsets.ViewSet):
         start = start.split('.')
         start = datetime.datetime.strptime(start[0], "%Y-%m-%dT%H:%M:%S")
         tz    = pytz.timezone('Asia/Kolkata')
-        start = start.astimezone(tz=timezone.utc)
+        start = start.replace(tzinfo=tz).astimezone(tz=timezone.utc)
         messages.append(start)
         
         res = tools.response_prepare(messages, True, None)
