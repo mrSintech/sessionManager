@@ -71,7 +71,7 @@ class RoomViewSet(viewsets.ViewSet):
                 start = session['start']
                 end   = session['end']
            
-        tz = timezone('Asia/Tehran')  
+        tz = pytz.timezone('Asia/Tehran')  
         start = start.split('.')
         start = datetime.datetime.strptime(start[0], "%Y-%m-%dT%H:%M:%S")
         start = start.astimezone(tz=tz)
