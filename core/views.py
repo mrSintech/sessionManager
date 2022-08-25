@@ -62,7 +62,11 @@ class RoomViewSet(viewsets.ViewSet):
         
         sessions = json.loads(sessions)
         for session in sessions:
-            session['title2']
+            try:
+                session['id']
+            
+            except KeyError:
+                messages.append(session['title'])
         
         res = tools.response_prepare(messages, True, None)
         return Response(res)
