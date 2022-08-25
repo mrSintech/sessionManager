@@ -106,7 +106,7 @@ class RoomViewSet(viewsets.ViewSet):
             )
             
             ser = ReserveSerializer(reserve_conflics, many=True)
-            return Response(ser)
+            return Response(ser.data)
         
             # calculate duration
             duration = (end - start).total_seconds() / 3600
