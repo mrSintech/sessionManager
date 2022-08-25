@@ -110,8 +110,8 @@ class RoomViewSet(viewsets.ViewSet):
                     Q(end_datetime__gt=end)
                 ) |
                 (
-                    Q(execute_datetime__gt=start) &
-                    Q(end_datetime__lt=start)
+                    Q(execute_datetime__lt=start) &
+                    Q(end_datetime__gt=start)
                 )
             )
             
