@@ -23,6 +23,8 @@ class Reserve(models.Model):
     # Reserve Control
     is_done = models.BooleanField(default=False)
     
+    title = models.CharField(max_length=255)
+    
     reservatore = models.ForeignKey(
         'authentication.User',
         on_delete=models.CASCADE,

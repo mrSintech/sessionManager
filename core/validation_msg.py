@@ -9,3 +9,6 @@ LoginSmsSent        = "پیامک حاوی کد ورود برای شما ارس�
 LoginIncorrectCode  = 'کد وارد شده اشتباه است'
 LoginTokenExpired   = 'توکن منقضی شده است'
 LoginSuccesful      = 'خوش آمدید'
+
+# Reserve
+ReserveNoDateSelected = 'تاریخ جلسه را مشخص کنید'

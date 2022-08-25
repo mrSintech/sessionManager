@@ -20,6 +20,9 @@ from .serializers import *
 from django.utils import timezone
 from core import tools
 
+# Dependencies
+from core import validation_msg
+
 # Exceptions
 from django.utils.datastructures import MultiValueDictKeyError
 from django.core.exceptions import ObjectDoesNotExist
@@ -55,13 +58,22 @@ class RoomViewSet(viewsets.ViewSet):
         is_valid = True
         messages = []
         
+        # Gather data
         try:
             sessions = request.POST['session']
+            room     = request.POST['room']
             
         except MultiValueDictKeyError:
-            pass
+            return Response(
+                {'message':'required parameters missed!'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         
+        # load json
         sessions = json.loads(sessions)
+        
+        # check for new session
+        is_valid = False
         for session in sessions:
             try:
                 session['id']
@@ -70,27 +82,35 @@ class RoomViewSet(viewsets.ViewSet):
                 title = session['title']
                 start = session['start']
                 end   = session['end']
-           
-        tz = pytz.timezone('Asia/Tehran')  
-        start = start.split('.')
-        start = datetime.datetime.strptime(start[0], "%Y-%m-%dT%H:%M:%S")
-        start = start.astimezone(tz=tz).replace(tzinfo=None)
+                is_valid = True
         
-        end = end.split('.')
-        end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
-        end = end.astimezone(tz=tz).replace(tzinfo=None)
-        
-        user = request.user
-        room = SessionRoom.objects.get(id=1)
-        reserve = Reserve(
-            reservatore=user,
-            room=room,
-            execute_datetime=start,
-            duration=2
-        )
-        reserve.save()
-        
-        res = tools.response_prepare(messages, True, None)
-        return Response(res)
-        
+        if is_valid:
+            # timezone process
+            tz = pytz.timezone('Asia/Tehran')  
+            start = start.split('.')
+            start = datetime.datetime.strptime(start[0], "%Y-%m-%dT%H:%M:%S")
+            start = start.astimezone(tz=tz).replace(tzinfo=None)
             
+            end = end.split('.')
+            end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
+            end = end.astimezone(tz=tz).replace(tzinfo=None)
+            
+            user = request.user
+            
+            reserve = Reserve(
+                reservatore=user,
+                room=room,
+                execute_datetime=start,
+                duration=2
+            )
+            reserve.save()
+            
+            res = tools.response_prepare(messages, True, None)
+            return Response(res)
+        
+        else: # no reserve date selected
+            messages.append(validation_msg.ReserveNoDateSelected) 
+        
+    # FAIL
+        res = response_prepare(messages, False, None)
+        return Response(res)
