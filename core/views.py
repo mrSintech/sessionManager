@@ -99,28 +99,28 @@ class RoomViewSet(viewsets.ViewSet):
             end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
             end = end.astimezone(tz=tz).replace(tzinfo=None)
             
-            # check reserve time
-            reserve_conflics = Reserve.objects.filter(
+            # check reserve validations
+            reserve_conflicts = Reserve.objects.filter(
                 (
                     Q(room=room) &
                     Q(execute_datetime__date=start.date())
                 ) &
                 (
                     (
-                        Q(execute_datetime__lt=end) &
-                        Q(end_datetime__gt=end)
+                        Q(execute_datetime__lte=end) &
+                        Q(end_datetime__gte=end)
                     ) |
                     (
-                        Q(execute_datetime__lt=start) &
-                        Q(end_datetime__gt=start)
+                        Q(execute_datetime__lte=start) &
+                        Q(end_datetime__gte=start)
                     ) |
                     (
-                        Q(execute_datetime__lt=start)&
-                        Q(end_datetime__gt=end)
+                        Q(execute_datetime__lte=start)&
+                        Q(end_datetime__gte=end)
                     ) |
                     (
-                        Q(execute_datetime__gt=start)&
-                        Q(end_datetime__lt=end)
+                        Q(execute_datetime__gte=start)&
+                        Q(end_datetime__lte=end)
                     )
                 )
             )
@@ -130,8 +130,8 @@ class RoomViewSet(viewsets.ViewSet):
             
             # check day of reserve be close
             
-            ser = ReserveSerializer(reserve_conflics, many=True)
-            return Response({'t': len(reserve_conflics)})
+            ser = ReserveSerializer(reserve_conflicts, many=True)
+            return Response({'t': len(reserve_conflicts)})
         
             # calculate duration
             duration = (end - start).total_seconds() / 3600
