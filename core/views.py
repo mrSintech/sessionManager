@@ -53,11 +53,11 @@ class RoomViewSet(viewsets.ViewSet):
     def create(self, request):
         is_valid = True
         messages = []
-        # return Response(request.POST)
+        messages.append(request.POST)
         try:
             sessions = request.POST['session']
             sessions = json.loads(sessions)
-            messages.append(str(sessions[1]))
+            messages.append(str(sessions))
         except MultiValueDictKeyError:
             pass
         
