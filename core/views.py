@@ -39,6 +39,8 @@ class RoomViewSet(viewsets.ViewSet):
         room = SessionRoom.actives.get(id=pk)
         serializer = SessionRoomDetailSerializer(room)
         return Response(serializer.data)
-        
+   
+    def create(self, request):
+        print(request.POST)     
         
             
