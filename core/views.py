@@ -112,5 +112,5 @@ class RoomViewSet(viewsets.ViewSet):
             messages.append(validation_msg.ReserveNoDateSelected) 
         
     # FAIL
-        res = response_prepare(messages, False, None)
+        res = tools.response_prepare(messages, False, None)
         return Response(res)
