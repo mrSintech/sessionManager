@@ -21,16 +21,20 @@ class RoomPicSerializer(serializers.ModelSerializer):
         ]
         
 class SessionRoomDemoSerializer(serializers.ModelSerializer):
+    pics = RoomPicSerializer(many=True)
+    
     class Meta:
         model  = SessionRoom
         fields = [
             'id',
             'is_active',
             'title',
-            'capacity'
+            'pics',
+            'capacity',
+            'info'
         ]
         
-class RoomDetailSerializer(serializers.ModelSerializer):
+class SessionRoomDetailSerializer(serializers.ModelSerializer):
     pics = RoomPicSerializer(many=True)
     
     class Meta:
@@ -41,9 +45,8 @@ class RoomDetailSerializer(serializers.ModelSerializer):
             'pics',
             'is_active',
             'capacity',
-            'has_heater',
-            'has_cooler',
-            'has_projector'
+            'info',
+            'reserves'
         ]
 
 class ReserveSerializer(serializers.ModelSerializer):

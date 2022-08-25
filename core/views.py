@@ -31,7 +31,7 @@ class RoomViewSet(viewsets.ViewSet):
     def list(self, request):
         # Gathering data
         rooms = SessionRoom.actives.all()
-        serializer = RoomDetailSerializer(rooms, many=True)
+        serializer = SessionRoomDemoSerializer(rooms, many=True)
         
         return Response(serializer.data)
         
