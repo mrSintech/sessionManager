@@ -70,15 +70,20 @@ class RoomViewSet(viewsets.ViewSet):
                 title = session['title']
                 start = session['start']
                 end   = session['end']
-                
-        start = start.split('.')
-        start = datetime.datetime.strptime(start[0], "%Y-%m-%dT%H:%M:%S")
-        tz    = pytz.timezone('Asia/Kolkata')
-        start = start.replace(tzinfo=timezone.utc).astimezone(tz=tz)
+           
+        india_tz = pytz.timezone('Asia/Kolkata')
+             
         start = timezone.make_naive(start)
+        start = datetime.datetime.strptime(start, "%Y-%m-%dT%H:%M:%S")
+        start = start.replace(tzinfo=timezone.utc).astimezone(tz=india_tz)
+        
+        end = end.split('.')
+        end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
+        end = end.replace(tzinfo=timezone.utc).astimezone(tz=india_tz)
 
         messages.append(title)
         messages.append(start)
+        messages.append(end)
         
         res = tools.response_prepare(messages, True, None)
         return Response(res)
