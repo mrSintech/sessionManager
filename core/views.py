@@ -52,9 +52,10 @@ class RoomViewSet(viewsets.ViewSet):
     def create(self, request):
         is_valid = True
         messages = []
-        
+        return Response(request.POST)
         try:
             sessions = request.POST['session']
+            sessions = json.dumps(sessions)
             sessions = json.loads(sessions)
             
         except MultiValueDictKeyError:
