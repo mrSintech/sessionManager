@@ -80,9 +80,14 @@ class RoomViewSet(viewsets.ViewSet):
         end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
         end = end.astimezone(tz=tz).replace(tzinfo=None)
         
-        messages.append(title)
-        messages.append(start)
-        messages.append(end)
+        user = request.user
+        room = SessionRoom.objects.get(id=1)
+        reserve = Reserve(
+            reservatore=user,
+            room=room,
+            duration=2
+        )
+        reserve.save()
         
         res = tools.response_prepare(messages, True, None)
         return Response(res)
