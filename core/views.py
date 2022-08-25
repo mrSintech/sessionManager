@@ -17,6 +17,7 @@ from .serializers import *
 
 # Tools
 from django.utils import timezone
+from core import tools
 
 # Exceptions
 from django.utils.datastructures import MultiValueDictKeyError
@@ -52,18 +53,18 @@ class RoomViewSet(viewsets.ViewSet):
     def create(self, request):
         is_valid = True
         messages = []
-        return Response(request.POST)
+        # return Response(request.POST)
         try:
             sessions = request.POST['session']
-            sessions = json.dumps(sessions)
             sessions = json.loads(sessions)
-            
+            messages.append(sessions[0])
         except MultiValueDictKeyError:
             pass
         
         for session in sessions:
             messages.append(session.title)
         
-        return Response(messages)
+        res = tools.response_prepare(messages, True, None)
+        return Response()
         
             
