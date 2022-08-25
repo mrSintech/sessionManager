@@ -13,6 +13,9 @@ from .models import *
 # Serializers
 from .serializers import *
 
+# Tools
+from django.utils import timezone
+
 class UserRoomReserveViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated,]
     
@@ -41,6 +44,9 @@ class RoomViewSet(viewsets.ViewSet):
         return Response(serializer.data)
    
     def create(self, request):
+        reserve = Reserve.objects.get(id=3).execute_datetime
+        date = timezone.make_naive(reserve)
+        print(date)
         return Response(request.POST)
         
             

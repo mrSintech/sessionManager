@@ -10,6 +10,7 @@ from .models import *
 
 # Tools
 from core import tools
+from django.utils import timezone
 
 class RoomPicSerializer(serializers.ModelSerializer):
     class Meta:
@@ -44,20 +45,23 @@ class SessionRoomDemoSerializer(serializers.ModelSerializer):
         ]
    
 class SessionRoomReservesSerializer(serializers.ModelSerializer):
-    title        = serializers.SerializerMethodField()
-    start        = serializers.SerializerMethodField()
-    end = serializers.SerializerMethodField()
+    title = serializers.SerializerMethodField()
+    start = serializers.SerializerMethodField()
+    end   = serializers.SerializerMethodField()
     
     def get_title(self, obj): 
         return obj.departman.title
     
-    def get_start(self, obj): 
-        return obj.execute_datetime
+    def get_start(self, obj):
+        date = obj.execute_datetime
+        date = timezone.make_naive(date)
+        return date
     
     def get_end(self, obj):
         session_date = obj.execute_datetime
         duration = obj.duration
         end_date = session_date + datetime.timedelta(hours=duration)
+        end_date = timezone.make_naive(end_date)
         return end_date
     
     class Meta:
