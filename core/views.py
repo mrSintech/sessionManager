@@ -73,7 +73,7 @@ class RoomViewSet(viewsets.ViewSet):
                 end   = session['end']
                 
         start = start.split('.')
-        start = datetime.datetime.strptime(start[0], "%y-%m-%dT%H:%M:%S")
+        start = datetime.datetime.strptime(start[0], "%Y-%m-%dT%H:%M:%S")
         # tz    = pytz.timezone('Asia/Kolkata')
         # start = start.astimezone(tz=timezone.utc)
         messages.append(start)
