@@ -61,8 +61,8 @@ class RoomViewSet(viewsets.ViewSet):
         except MultiValueDictKeyError:
             pass
         
-        for session in sessions:
-            messages.append(session.title)
+        # for session in sessions:
+        #     messages.append(session.title)
         
         res = tools.response_prepare(messages, True, None)
         return Response()
