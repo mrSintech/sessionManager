@@ -80,7 +80,7 @@ class RoomViewSet(viewsets.ViewSet):
         is_valid = False
         for reserve in reserves:
             try:
-                session['id']
+                reserve['id']
             
             except KeyError:
                 title = reserve['title']
