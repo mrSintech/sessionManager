@@ -101,8 +101,8 @@ class RoomViewSet(viewsets.ViewSet):
             
             # check reserve time
             reserve_conflics = Reserve.objects.filter(
-                execute_datetime__lt=start,
-                end_datetime__gt=end
+                Q(execute_datetime__gt=start) |
+                Q(end_datetime__lt=end)
             )
             
             ser = ReserveSerializer(reserve_conflics, many=True)
