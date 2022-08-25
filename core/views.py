@@ -70,16 +70,15 @@ class RoomViewSet(viewsets.ViewSet):
                 title = session['title']
                 start = session['start']
                 end   = session['end']
-             
+           
+        tz = timezone('Asia/Tehran')  
         start = start.split('.')
         start = datetime.datetime.strptime(start[0], "%Y-%m-%dT%H:%M:%S")
+        start = start.astimezone(tz=tz)
         
         end = end.split('.')
         end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
-
-        messages.append(title)
-        messages.append(start)
-        messages.append(end)
+        end = end.astimezone(tz=tz)
         
         res = tools.response_prepare(messages, True, None)
         return Response(res)
