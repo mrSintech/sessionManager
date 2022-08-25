@@ -41,6 +41,6 @@ class RoomViewSet(viewsets.ViewSet):
         return Response(serializer.data)
    
     def create(self, request):
-        print(request.POST)     
+        return Response(request.POST)
         
             
