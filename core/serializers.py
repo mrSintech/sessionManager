@@ -44,9 +44,17 @@ class SessionRoomDemoSerializer(serializers.ModelSerializer):
         ]
    
 class SessionRoomReservesSerializer(serializers.ModelSerializer):
-    end_datetime = serializers.SerializerMethodField()
+    title        = serializers.SerializerMethodField()
+    start        = serializers.SerializerMethodField()
+    end = serializers.SerializerMethodField()
     
-    def get_end_datetime(self, obj):
+    def get_title(self, obj): 
+        return obj.departman.title
+    
+    def get_start(self, obj): 
+        return obj.execute_datetime
+    
+    def get_end(self, obj):
         session_date = obj.execute_datetime
         duration = obj.duration
         end_date = session_date + datetime.timedelta(hours=duration)
@@ -57,12 +65,11 @@ class SessionRoomReservesSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'is_done',
-            'departman',
-            'execute_datetime',
+            'title', # Departman
+            'start',
             'duration',
-            'end_datetime'
-        ]
-        
+            'end'
+        ]     
      
 class SessionRoomDetailSerializer(serializers.ModelSerializer):
     pics     = RoomPicSerializer(many=True)
