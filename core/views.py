@@ -57,7 +57,7 @@ class RoomViewSet(viewsets.ViewSet):
         try:
             sessions = request.POST['session']
             sessions = json.loads(sessions)
-            messages.append(str(sessions))
+            messages.append(sessions[0])
         except MultiValueDictKeyError:
             pass
         
