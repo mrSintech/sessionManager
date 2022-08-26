@@ -56,32 +56,32 @@ class RoomViewSet(viewsets.ViewSet):
         serializer = SessionRoomDetailSerializer(room)
         return Response(serializer.data)
    
-    def conflict_validator(self):
+    def conflict_validator(self, start, end, room):
         reserve_conflicts = Reserve.objects.filter(
             (
-                Q(room=self.room) &
-                Q(execute_datetime__date=self.start.date())
+                Q(room=room) &
+                Q(execute_datetime__date=start.date())
             ) &
             (
                 (
-                    Q(execute_datetime__lt=self.end) &
-                    Q(end_datetime__gt=self.end)
+                    Q(execute_datetime__lt=end) &
+                    Q(end_datetime__gt=end)
                 ) |
                 (
-                    Q(execute_datetime__lt=self.start) &
-                    Q(end_datetime__gt=self.start)
+                    Q(execute_datetime__lt=start) &
+                    Q(end_datetime__gt=start)
                 ) |
                 (
-                    Q(execute_datetime__lt=self.start)&
-                    Q(end_datetime__gt=self.end)
+                    Q(execute_datetime__lt=start)&
+                    Q(end_datetime__gt=end)
                 ) |
                 (
-                    Q(execute_datetime__gt=self.start)&
-                    Q(end_datetime__lt=self.end)
+                    Q(execute_datetime__gt=start)&
+                    Q(end_datetime__lt=end)
                 ) |
                 (
-                    Q(execute_datetime=self.start)&
-                    Q(end_datetime=self.end)
+                    Q(execute_datetime=start)&
+                    Q(end_datetime=end)
                 )
             )
         )
@@ -107,7 +107,7 @@ class RoomViewSet(viewsets.ViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        self.room = SessionRoom.actives.get(id=room)
+        room = SessionRoom.actives.get(id=room)
         
         # load json
         reserves = json.loads(reserves)
@@ -129,14 +129,14 @@ class RoomViewSet(viewsets.ViewSet):
             tz = pytz.timezone('Asia/Tehran')  
             start = start.split('.')
             start = datetime.datetime.strptime(start[0], "%Y-%m-%dT%H:%M:%S")
-            self.start = start.astimezone(tz=tz).replace(tzinfo=None)
+            sstart = start.astimezone(tz=tz).replace(tzinfo=None)
             
             end = end.split('.')
             end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
-            self.end = end.astimezone(tz=tz).replace(tzinfo=None)
+            end = end.astimezone(tz=tz).replace(tzinfo=None)
             
             # check other reserve conflicts
-            if not self.conflict_validator():
+            if not self.conflict_validator(start, end, room):
                 is_valid = False
                 messages.append(validation_msg.ReserveConflict)
                
@@ -186,9 +186,9 @@ class RoomViewSet(viewsets.ViewSet):
                 reserve = Reserve(
                     title=title,
                     reservatore=user,
-                    room=self.room,
-                    execute_datetime=self.start,
-                    end_datetime=self.end,
+                    room=room,
+                    execute_datetime=start,
+                    end_datetime=end,
                     duration=duration
                 )
                 reserve.save()
