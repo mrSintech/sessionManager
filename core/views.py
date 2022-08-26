@@ -185,9 +185,9 @@ class RoomViewSet(viewsets.ViewSet):
                 reserve = Reserve(
                     title=title,
                     reservatore=user,
-                    room=room,
-                    execute_datetime=start,
-                    end_datetime=end,
+                    room=self.room,
+                    execute_datetime=self.start,
+                    end_datetime=self.end,
                     duration=duration
                 )
                 reserve.save()
