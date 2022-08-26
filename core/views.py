@@ -128,7 +128,7 @@ class RoomViewSet(viewsets.ViewSet):
                 is_valid = False
                 messages.append(validation_msg.ReserveConflict)
                
-            current_time = datetime.now() 
+            current_time = datetime.datetime.now() 
             # check reserve in past
             time_dif = (start - current_time).total_seconds()
             if time_dif < 0:
