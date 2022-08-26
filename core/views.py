@@ -143,8 +143,8 @@ class RoomViewSet(viewsets.ViewSet):
                 self.messages.append(validation_msg.ReserveMinSecInvalid)
                 
         # Check hourse range
-        if start < settings.SESSION_START_TIME \
-            or end > settings.SESSION_END_TIME:
+        if start.hour < settings.SESSION_START_TIME \
+            or end.hour > settings.SESSION_END_TIME:
                 
             is_valid = False
             self.messages.append(validation_msg.ReserveMinSecInvalid)
