@@ -223,7 +223,7 @@ class AdminReserves(viewsets.ViewSet):
         
         return Response(serializer.data)
     
-    def destroy(self, request):
+    def delete(self, request):
         try:
             reserve = request.query_params['pk']
         
