@@ -40,13 +40,6 @@ from django.http import HttpResponse
 # Tasks
 from .tasks import *
 
-class Test(viewsets.ViewSet):
-    def list(self, request):
-        user = User.objects.all()
-        serializer = TestSerializer(user, many=True)
-        
-        return Response(serializer.data)
-
 class UserLogin(viewsets.ViewSet):
     """
         User login by phonenumber
@@ -160,3 +153,9 @@ class LoginVerify(viewsets.ViewSet):
         # FAIL
         res = response_prepare(messages, False, None)
         return Response(res)
+    
+class AdminLogin(viewsets.ViewSet):
+    permission_classes = [AllowAny,]
+    
+    def create(self, request):
+        return Response(request.POST)
