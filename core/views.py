@@ -128,12 +128,12 @@ class RoomViewSet(viewsets.ViewSet):
                 is_valid = False
                 messages.append(validation_msg.ReserveConflict)
                
-            # current_time = datetime.datetime.now() 
-            # # check reserve in past
-            # time_dif = (start - current_time).total_seconds()
-            # if time_dif < 0:
-            #     is_valid = False
-            #     messages.append(validation_msg.ReserveInPastNotAllowed)
+            current_time = datetime.datetime.now() 
+            # check reserve in past
+            time_dif = (start - current_time).total_seconds()
+            if time_dif < 0:
+                is_valid = False
+                messages.append(validation_msg.ReserveInPastNotAllowed)
                 
             # # check reserve duration limit
             # duration = (end - start).total_seconds() / 3600
