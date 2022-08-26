@@ -160,7 +160,7 @@ class RoomViewSet(viewsets.ViewSet):
             # check user's other sessions in the same day
             user     = request.user
             reserves = user.reserves.filter(
-                execute_datetime__date = current_time.date()
+                execute_datetime__date = start.date()
             )
             if len(reserves) > settings.USER_MAX_SESSION_PER_DAY:
                 is_valid = False,
