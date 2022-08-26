@@ -91,7 +91,7 @@ class RoomViewSet(viewsets.ViewSet):
         else:
             return True
         
-    def _reserve_validations(self, request, start, end, room):
+    def _reserve_validations(self, user, start, end, room):
         is_valid = True
         
         current_time = datetime.datetime.now() 
@@ -125,7 +125,6 @@ class RoomViewSet(viewsets.ViewSet):
             self.messages.append(validation_msg.ReserveDayRangeLimit)
             
         # check user's other sessions in the same day
-        user     = request.user
         reserves = user.reserves.filter(
             execute_datetime__date = start.date()
         )
@@ -186,7 +185,8 @@ class RoomViewSet(viewsets.ViewSet):
             # timezone process
             start = self.tz_free_date(start)
             end   = self.tz_free_date(end)
-        
+            user  = request.user.prefetch_related('reserves')
+            
             # validate reserve
             is_valid = self._reserve_validations(start, request, end, room)
  
