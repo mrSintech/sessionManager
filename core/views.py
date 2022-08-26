@@ -217,7 +217,7 @@ class AdminReserves(viewsets.ViewSet):
     permission_classes = [IsAuthenticated, IsStaff]
     
     def list(self, request):
-        reserves   = Reserve.objects.filter(is_done=False)
+        reserves   = Reserve.objects.filter(is_done=False).order_by('-execute_datetime')
         serializer = ReserveSerializer(reserves, many=True)
         
         return Response(serializer.data)
