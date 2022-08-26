@@ -213,6 +213,8 @@ class AdminAddUserViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated, IsStaff]
 
     def create(self, request):
+        return Response(request.POST)
+        
         # gather data
         try:
             is_admin   = request.POST['is_staff']
@@ -221,7 +223,7 @@ class AdminAddUserViewSet(viewsets.ViewSet):
             number     = request.POST['number']
             department = request.POST['department']
             
-        except ObjectDoesNotExist:
+        except MultiValueDictKeyError:
             return Response(
                 {'message':'required parameters missed!'},
                 status=status.HTTP_400_BAD_REQUEST
