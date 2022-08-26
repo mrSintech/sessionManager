@@ -162,7 +162,7 @@ class RoomViewSet(viewsets.ViewSet):
             reserves = user.reserves.filter(
                 execute_datetime__date = start.date()
             )
-            if len(reserves) > settings.USER_MAX_SESSION_PER_DAY:
+            if len(reserves) >= settings.USER_MAX_SESSION_PER_DAY:
                 is_valid = False,
                 messages.append(validation_msg.ReserveCountPerDayLimit)
         
