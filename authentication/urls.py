@@ -8,8 +8,6 @@ from . import views
 
 router = routers.DefaultRouter()
 
-router.register('test', views.Test, 'test')
-
 router.register('login',   views.UserLogin,   'login')
 router.register('verify',  views.LoginVerify, 'verify')
 router.register('a_login', views.AdminLogin,  'a-login')
