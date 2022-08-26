@@ -144,7 +144,7 @@ class RoomViewSet(viewsets.ViewSet):
             
             # check day of reserve be close
             max_date = current_time + datetime.timedelta(days=settings.MAX_DAY_RANGE_TO_RESERVE)
-            if end.date() > settings.MAX_DAY_RANGE_TO_RESERVE:
+            if end.date() > max_date.date():
                 is_valid = False
                 messages.append(validation_msg.ReserveDayRangeLimit)
             
