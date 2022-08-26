@@ -30,6 +30,10 @@ class User(AbstractUser):
     def __str__(self):
         return "{} - {} {}".format(self.id, self.first_name, self.last_name)
     
+    def save(self, *args, **kwargs):
+        self.username = self.id
+        super(Reserve, self).save(*args, **kwargs)
+    
 
 class Departman(models.Model):
     title       = models.CharField(max_length=50)

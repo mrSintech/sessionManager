@@ -61,13 +61,9 @@ class Reserve(models.Model):
     
     def __str__(self):
         return "{} | {}".format(self.execute_datetime, self.reservatore.first_name, self.reservatore.first_name)
-    
-    def assign_departman(self):
-        departman = self.reservatore.departman
-        self.departman = departman
-    
+
     def save(self, *args, **kwargs):
-        self.assign_departman()
+        self.departman = self.reservatore.departman
         super(Reserve, self).save(*args, **kwargs)
     
 class SessionRoom(models.Model):

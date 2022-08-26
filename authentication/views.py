@@ -24,14 +24,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 # Tools
 from core import validation_msg
-from core.tools import (
-    is_empty,
-    validate_phonenumber,
-    JwtTools,
-    random_code_generator,
-    create_session_token,
-    response_prepare
-)
+from core import tools
 from core.sms_handler import SendSms
 
 # Dev tools
@@ -52,12 +45,12 @@ class UserLogin(viewsets.ViewSet):
 
         # Receive and validate number
         number = request.POST.get('number')
-        if is_empty(number): # check if number is empty
+        if tools.is_empty(number): # check if number is empty
             is_valid = False
             messages.append(validation_msg.LoginFieldEmpty)
         
         else:
-            number = validate_phonenumber(number) # validate and format phonenumber
+            number = tools.validate_phonenumber(number) # validate and format phonenumber
             if number == 'err':
                 is_valid = False
                 messages.append(validation_msg.WrongPhoneNumber)
@@ -72,15 +65,15 @@ class UserLogin(viewsets.ViewSet):
                 messages.append(validation_msg.LoginPhoneNotExists)
                 
             if is_valid:
-                token = JwtTools.generate_jwt(user)
-                code  = random_code_generator(4)
+                token = tools.JwtTools.generate_jwt(user)
+                code  = tools.random_code_generator(4)
                 token_data = {
                     'sms_code'     : code,
                     'login'        : token
                 }
                 
                 # Create Session Token
-                session_key = create_session_token(token_data)
+                session_key = tools.create_session_token(token_data)
                 
                 # Send sms
                 send_auth_sms.delay(number, code)
@@ -96,12 +89,12 @@ class UserLogin(viewsets.ViewSet):
                      
                 # SUCCESS
                 messages.append(validation_msg.LoginSmsSent)
-                res = response_prepare(messages, True, json_data)
+                res = tools.response_prepare(messages, True, json_data)
                 return Response(res)
             
             
         # Fail
-        res = response_prepare(messages, False, None)
+        res = tools.response_prepare(messages, False, None)
         return Response(res)
       
 class LoginVerify(viewsets.ViewSet):
@@ -116,7 +109,7 @@ class LoginVerify(viewsets.ViewSet):
         code = request.POST.get('code')
         
         # Validating Data
-        if is_empty(token) or is_empty(code):
+        if tools.is_empty(token) or tools.is_empty(code):
             is_valid = False
             messages.append(validation_msg.SomethingWentWrong)
             
@@ -146,16 +139,32 @@ class LoginVerify(viewsets.ViewSet):
                     
                     # SUCCESS
                     messages.append(validation_msg.LoginSuccesful)
-                    res = response_prepare(messages, True, json_data)
+                    res = tools.response_prepare(messages, True, json_data)
                     return Response(res)
                 
             
         # FAIL
-        res = response_prepare(messages, False, None)
+        res = tools.response_prepare(messages, False, None)
         return Response(res)
     
 class AdminLogin(viewsets.ViewSet):
     permission_classes = [AllowAny,]
     
     def create(self, request):
-        return Response(request.POST)
+        is_valid = True
+        messages = []
+        
+        try:
+            number   = request.POST['user']
+            password = request.POST['pass']
+            
+        except MultiValueDictKeyError:
+            pass
+        
+        number = tools.validate_phonenumber(number)
+        username = User.objects.get(phone_no__number).username
+        
+        messages.append(username)
+
+        res = tools.response_prepare(messages, True, None)
+        return Response(res)
