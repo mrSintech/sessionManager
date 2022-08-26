@@ -56,6 +56,41 @@ class RoomViewSet(viewsets.ViewSet):
         serializer = SessionRoomDetailSerializer(room)
         return Response(serializer.data)
    
+    def conflict_validator(self):
+        reserve_conflicts = Reserve.objects.filter(
+            (
+                Q(room=self.room) &
+                Q(execute_datetime__date=self.start.date())
+            ) &
+            (
+                (
+                    Q(execute_datetime__lt=self.end) &
+                    Q(end_datetime__gt=self.end)
+                ) |
+                (
+                    Q(execute_datetime__lt=self.start) &
+                    Q(end_datetime__gt=self.start)
+                ) |
+                (
+                    Q(execute_datetime__lt=self.start)&
+                    Q(end_datetime__gt=self.end)
+                ) |
+                (
+                    Q(execute_datetime__gt=self.start)&
+                    Q(end_datetime__lt=self.end)
+                ) |
+                (
+                    Q(execute_datetime=self.start)&
+                    Q(end_datetime=self.end)
+                )
+            )
+        )
+        if len(reserve_conflicts) != 0:
+            return False
+        
+        else:
+            return True
+            
     def create(self, request):
         is_valid = True
         messages = []
@@ -167,37 +202,3 @@ class RoomViewSet(viewsets.ViewSet):
         res = tools.response_prepare(messages, False, None)
         return Response(res)
     
-        def conflict_validator(self):
-            reserve_conflicts = Reserve.objects.filter(
-                (
-                    Q(room=self.room) &
-                    Q(execute_datetime__date=self.start.date())
-                ) &
-                (
-                    (
-                        Q(execute_datetime__lt=self.end) &
-                        Q(end_datetime__gt=self.end)
-                    ) |
-                    (
-                        Q(execute_datetime__lt=self.start) &
-                        Q(end_datetime__gt=self.start)
-                    ) |
-                    (
-                        Q(execute_datetime__lt=self.start)&
-                        Q(end_datetime__gt=self.end)
-                    ) |
-                    (
-                        Q(execute_datetime__gt=self.start)&
-                        Q(end_datetime__lt=self.end)
-                    ) |
-                    (
-                        Q(execute_datetime=self.start)&
-                        Q(end_datetime=self.end)
-                    )
-                )
-            )
-            if len(reserve_conflicts) != 0:
-                return False
-            
-            else:
-                return True
