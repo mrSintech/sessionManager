@@ -95,7 +95,7 @@ class RoomViewSet(viewsets.ViewSet):
         is_valid = True
         messages = []
         
-        messages.append(request.POST)
+        # messages.append(request.POST)
         # Gather data
         try:
             reserves = request.POST['session']
