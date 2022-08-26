@@ -167,7 +167,12 @@ class RoomViewSet(viewsets.ViewSet):
                 messages.append(validation_msg.ReserveCountPerDayLimit)
         
             # check round time
-            
+            if start.minute != 0 \
+                or start.second != 0 \
+                or end.minute != 0 \
+                or end.second != 0:
+                    is_valid = False
+                    messages.append(validation_msg.ReserveMinSecInvalid)
             
             # calculate duration
             
