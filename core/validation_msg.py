@@ -22,3 +22,4 @@ ReserveTimeLimited      = 'مدت زمان جلسه نمیتواند بیشتر 
 ReserveDayRangeLimit    = 'حداکثر زمان رزرو از امروز تا {} روز بعد امکان پذیر است'.format(settings.MAX_DAY_RANGE_TO_RESERVE)
 ReserveCountPerDayLimit = 'حداکثر تعداد رزرو در یک روز {} عدد است'.format(settings.USER_MAX_SESSION_PER_DAY)
 ReserveMinSecInvalid    = 'ساعت جلسه باید رند و کامل باشد'
+ReserveTimeRangeInvalid = 'ساعات مجاز برای رزرو از {} تا {} است'.format(settings.SESSION_START_TIME, settings.SESSION_END_TIME)

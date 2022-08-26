@@ -141,7 +141,15 @@ class RoomViewSet(viewsets.ViewSet):
             or end.second != 0:
                 is_valid = False
                 self.messages.append(validation_msg.ReserveMinSecInvalid)
+                
+        # Check hourse range
+        if start < settings.SESSION_START_TIME \
+            or end > settings.SESSION_END_TIME:
+                
+            is_valid = False
+            self.messages.append(validation_msg.ReserveMinSecInvalid)
         
+        # return    
         return is_valid
     
     def _tz_free_date(self, date):
