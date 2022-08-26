@@ -11,6 +11,7 @@ from rest_framework.permissions import (
 
 # Dependencies
 from django.contrib.sessions.models import Session
+from django.contrib.auth import authenticate
 
 # Models
 from .models import *
@@ -154,17 +155,37 @@ class AdminLogin(viewsets.ViewSet):
         is_valid = True
         messages = []
         
+        # Gather data
         try:
             number   = request.POST['user']
             password = request.POST['pass']
             
         except MultiValueDictKeyError:
-            pass
+            return Response(
+                {'message':'required parameters missed!'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         
+        # Validate number
         number = tools.validate_phonenumber(number)
-        username = User.objects.get(phone_no__number).username
+        if number == 'err':
+            is_valid = False
+            messages.append(validation_msg.WrongPhoneNumber)
         
-        messages.append(username)
-
-        res = tools.response_prepare(messages, True, None)
+        if is_valid:  
+            # Authenticate user  
+            username = User.objects.get(phone_no__number=number).username
+            user     = authenticate(username=username, password=password)
+            
+            if user:
+                # user authenticated, getting JWT
+                token = tools.JwtTools().generate_jwt(user)
+                res = tools.response_prepare(messages, True, token)
+                return Response(res)
+            
+            else:
+                is_valid = False
+                messages.append(validation_msg.LoginIncorrect)
+        
+        res = tools.response_prepare(messages, False, None)
         return Response(res)
