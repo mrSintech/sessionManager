@@ -71,7 +71,7 @@ class RoomViewSet(viewsets.ViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        room = SessionRoom.actives.get(id=room)
+        self.room = SessionRoom.actives.get(id=room)
         
         # load json
         reserves = json.loads(reserves)
@@ -93,42 +93,14 @@ class RoomViewSet(viewsets.ViewSet):
             tz = pytz.timezone('Asia/Tehran')  
             start = start.split('.')
             start = datetime.datetime.strptime(start[0], "%Y-%m-%dT%H:%M:%S")
-            start = start.astimezone(tz=tz).replace(tzinfo=None)
+            self.start = start.astimezone(tz=tz).replace(tzinfo=None)
             
             end = end.split('.')
             end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
-            end = end.astimezone(tz=tz).replace(tzinfo=None)
+            self.end = end.astimezone(tz=tz).replace(tzinfo=None)
             
-            # check other reserves validation
-            reserve_conflicts = Reserve.objects.filter(
-                (
-                    Q(room=room) &
-                    Q(execute_datetime__date=start.date())
-                ) &
-                (
-                    (
-                        Q(execute_datetime__lt=end) &
-                        Q(end_datetime__gt=end)
-                    ) |
-                    (
-                        Q(execute_datetime__lt=start) &
-                        Q(end_datetime__gt=start)
-                    ) |
-                    (
-                        Q(execute_datetime__lt=start)&
-                        Q(end_datetime__gt=end)
-                    ) |
-                    (
-                        Q(execute_datetime__gt=start)&
-                        Q(end_datetime__lt=end)
-                    ) |
-                    (
-                        Q(execute_datetime=start)&
-                        Q(end_datetime=end)
-                    )
-                )
-            )
-            if len(reserve_conflicts) != 0:
+            # check other reserve conflicts
+            if not conflict_validator():
                 is_valid = False
                 messages.append(validation_msg.ReserveConflict)
                
@@ -174,8 +146,6 @@ class RoomViewSet(viewsets.ViewSet):
                     is_valid = False
                     messages.append(validation_msg.ReserveMinSecInvalid)
             
-            # calculate duration
-            
             if is_valid:
                 reserve = Reserve(
                     title=title,
@@ -196,3 +166,38 @@ class RoomViewSet(viewsets.ViewSet):
         # FAIL
         res = tools.response_prepare(messages, False, None)
         return Response(res)
+    
+        def conflict_validator(self):
+            reserve_conflicts = Reserve.objects.filter(
+                (
+                    Q(room=self.room) &
+                    Q(execute_datetime__date=self.start.date())
+                ) &
+                (
+                    (
+                        Q(execute_datetime__lt=self.end) &
+                        Q(end_datetime__gt=self.end)
+                    ) |
+                    (
+                        Q(execute_datetime__lt=self.start) &
+                        Q(end_datetime__gt=self.start)
+                    ) |
+                    (
+                        Q(execute_datetime__lt=self.start)&
+                        Q(end_datetime__gt=self.end)
+                    ) |
+                    (
+                        Q(execute_datetime__gt=self.start)&
+                        Q(end_datetime__lt=self.end)
+                    ) |
+                    (
+                        Q(execute_datetime=self.start)&
+                        Q(end_datetime=self.end)
+                    )
+                )
+            )
+            if len(reserve_conflicts) != 0:
+                return False
+            
+            else:
+                return True
