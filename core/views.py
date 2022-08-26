@@ -56,7 +56,7 @@ class RoomViewSet(viewsets.ViewSet):
         serializer = SessionRoomDetailSerializer(room)
         return Response(serializer.data)
    
-    def conflict_validator(self, start, end, room):
+    def _conflict_validator(self, start, end, room):
         reserve_conflicts = Reserve.objects.filter(
             (
                 Q(room=room) &
@@ -91,12 +91,12 @@ class RoomViewSet(viewsets.ViewSet):
         else:
             return True
         
-    def reserve_validations(self, user, start, end, room):
+    def _reserve_validations(self, user, start, end, room):
         is_valid = True
         
         current_time = datetime.datetime.now() 
         # check reserve conflicts
-        if not self.conflict_validator(start, end, room):
+        if not self._conflict_validator(start, end, room):
             is_valid = False
             self.messages.append(validation_msg.ReserveConflict)
         
@@ -188,7 +188,7 @@ class RoomViewSet(viewsets.ViewSet):
             user  = request.user
             
             # validate reserve
-            is_valid = self.reserve_validations(user, start, end, room)
+            is_valid = self._reserve_validations(user, start, end, room)
         
         if duration > settings.MAX_SESSION_TIME:
             is_valid = False
