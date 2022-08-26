@@ -158,3 +158,7 @@ AUTH_USER_MODEL = 'authentication.User'
 CELERY_BROKER_URL = "redis://localhost:6379"
 CELERY_RESULT_BACKEND = "redis://localhost:6379"
 
+# App settings
+MAX_SESSION_TIME = 4
+USER_MAX_SESSION_PER_DAY = 1
+MAX_DAY_RANGE_TO_RESERVE = 4

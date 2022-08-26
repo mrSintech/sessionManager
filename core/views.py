@@ -89,7 +89,7 @@ class RoomViewSet(viewsets.ViewSet):
                 is_valid = True
         
         if is_valid:
-            # timezone process
+            # timezone process # TODO: refactor
             tz = pytz.timezone('Asia/Tehran')  
             start = start.split('.')
             start = datetime.datetime.strptime(start[0], "%Y-%m-%dT%H:%M:%S")
@@ -99,7 +99,7 @@ class RoomViewSet(viewsets.ViewSet):
             end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
             end = end.astimezone(tz=tz).replace(tzinfo=None)
             
-            # check reserve validations
+            # check other reserves validation
             reserve_conflicts = Reserve.objects.filter(
                 (
                     Q(room=room) &
@@ -124,19 +124,49 @@ class RoomViewSet(viewsets.ViewSet):
                     )
                 )
             )
-            # check not reserve in past
-            
+            if len(reserve_conflicts) != 0:
+                is_valid = False
+                messages.append(validation_msg.ReserveConflict)
+               
+            current_time = datetime.now() 
+            # check reserve in past
+            time_dif = (start - current_time).total_seconds()
+            if time_dif < 0:
+                is_valid = False
+                messages.append(validation_msg.ReserveInPastNotAllowed)
+                
             # check reserve duration limit
-            
-            # check day of reserve be close
-            
-            ser = ReserveSerializer(reserve_conflicts, many=True)
-            return Response({'t': len(reserve_conflicts)})
-        
-            # calculate duration
             duration = (end - start).total_seconds() / 3600
             
-            user = request.user
+            if duration > settings.MAX_SESSION_TIME:
+                is_valid = False
+                messages.append(validation_msg.ReserveTimeLimited)
+            
+            # check day of reserve be close
+            max_date = current_time + datetime.timedelta(days=settings.MAX_DAY_RANGE_TO_RESERVE)
+            if end > settings.MAX_DAY_RANGE_TO_RESERVE:
+                is_valid = False
+                messages.append(validation_msg.ReserveDayRangeLimit)
+            
+            # check end be grater than start
+            if start > end:
+                is_valid = False
+                messages.append(validation_msg.ReserveTimeInvalid)
+            
+            # check user's other sessions in the same day
+            user     = request.user
+            reserves = user.reserves.filter(
+                start_datetime__date = current_time.date()
+            )
+            if len(reserves) > settings.USER_MAX_SESSION_PER_DAY:
+                is_valid = False,
+                messages.append(validation_msg.ReserveCountPerDayLimit)
+        
+            # check round time
+            
+            
+            # calculate duration
+            
             reserve = Reserve(
                 title=title,
                 reservatore=user,

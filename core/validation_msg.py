@@ -1,3 +1,5 @@
+from django.conf import settings
+
 # General
 WrongPhoneNumber   = "فرمت شماره تلفن وارد شده صحیح نمیباشد"
 SomethingWentWrong = "مشکلی پیش آمده است"
@@ -11,4 +13,10 @@ LoginTokenExpired   = 'توکن منقضی شده است'
 LoginSuccesful      = 'خوش آمدید'
 
 # Reserve
-ReserveNoDateSelected = 'تاریخ جلسه را مشخص کنید'
+ReserveTimeInvalid      = 'زمان انتخاب شده نامعتبر است'
+ReserveNoDateSelected   = 'تاریخ و ساعت جلسه را مشخص کنید'
+ReserveConflict         = 'زمان انتخاب شده با رزرو های دیگر تداخل دارد'
+ReserveInPastNotAllowed = 'زمان انتخاب شده نامعتبر است'
+ReserveTimeLimited      = 'مدت زمان جلسه نمیتواند بیشتر از {} ساعت باشد'.format(settings.MAX_SESSION_TIME)
+ReserveDayRangeLimit    = 'حداکثر زمان رزرو از امروز تا {} روز بعد امکان پذیر است'.format(settings.MAX_DAY_RANGE_TO_RESERVE)
+ReserveCountPerDayLimit = 'حداکثر تعداد رزرو در یک روز {} عدد است'.format(settings.USER_MAX_SESSION_PER_DAY)

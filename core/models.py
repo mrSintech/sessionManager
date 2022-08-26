@@ -7,6 +7,9 @@ from django.db import models
 # tools
 from django.core.validators import MaxValueValidator
 
+# Dependencies
+from django.conf import settings
+
 # image process
 from PIL import Image
 from io import BytesIO
@@ -48,7 +51,7 @@ class Reserve(models.Model):
     # time
     duration = models.IntegerField( # session duration in hours
         validators = [
-            MaxValueValidator(4)
+            MaxValueValidator(settings.MAX_SESSION_TIME)
         ]
     )
     execute_datetime = models.DateTimeField()
