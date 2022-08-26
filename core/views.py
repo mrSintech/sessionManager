@@ -206,6 +206,54 @@ class UserRoomReserveViewSet(viewsets.ViewSet):
         res = tools.response_prepare(self.messages, False, None)
         return Response(res)
     
+    def delete(self, request):
+        is_valid = True
+        messages = []
+        
+        # gather data
+        try:
+            reserve = request.query_params['pk']
+        
+        except MultiValueDictKeyError:
+            return Response(
+                {'message':'required parameters missed!'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # get reserve model
+        try:
+            reserve = Reserve.objects.get(id=reserve)
+            
+        except ObjectDoesNotExist:
+            is_valid = False
+            messages.append(validation_msg.ReserveNotFound)
+        
+        # check reserve situation
+        if reserve.is_done:
+            is_valid = False
+            messages.append(validation_msg.ReserveIsDone)
+        
+        # check access
+        reserve_user = reserve.reservatore
+        user = request.user
+        
+        if is_valid and reserve_user == user:
+            reserve.delete()
+            
+            # SUCCESS
+            res = tools.response_prepare(None, True, None)
+            return Response(res)
+            
+        else:
+            is_valid = False
+            messages.append(validation_msg.ReserveNotFound)
+            res = tools.response_prepare(messages, False, None)
+            return Response(res, status=status.HTTP_403_FORBIDDEN)
+            
+        # FAIL
+        res = tools.response_prepare(messages, False, None)
+        return Response(res)
+    
 class RoomViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated,]
     
