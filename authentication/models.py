@@ -5,9 +5,9 @@ from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 
 class User(AbstractUser):
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'phone_no']
+    REQUIRED_FIELDS = ['first_name', 'last_name']
     
-    username        = models.CharField(
+    username = models.CharField(
         max_length = 50, 
         blank = True, 
         null = True, 
@@ -16,7 +16,7 @@ class User(AbstractUser):
     
     email    = models.EmailField(blank=True, null=True, unique = True)
     phone_no = models.OneToOneField(
-        "authentication.UserPhoneNumber",
+        'authentication.UserPhoneNumber',
         on_delete=models.PROTECT,
         related_name='user',
     )
@@ -31,8 +31,8 @@ class User(AbstractUser):
         return "{} - {} {}".format(self.id, self.first_name, self.last_name)
     
     def save(self, *args, **kwargs):
-        self.username = self.id
-        super(Reserve, self).save(*args, **kwargs)
+        self.username = self.phone_no.number
+        super(User, self).save(*args, **kwargs)
  
 class Admin(models.Model):
     user = models.OneToOneField(
@@ -59,12 +59,12 @@ class UserPhoneNumber(models.Model):
     country_code = models.CharField(max_length=4, default='+98')
     number       = models.CharField(max_length=10, unique=True, db_index=True)
     
-    def __str__(self):
-        return "{} - {} {} {}".format(
-            self.id, 
-            self.number,
-            self.user.first_name,
-            self.user.last_name,
-        )
+    # def __str__(self):
+    #     return "{} - {} {} {}".format(
+    #         self.id, 
+    #         self.number,
+    #         self.user.first_name,
+    #         self.user.last_name,
+    #     )
     
     

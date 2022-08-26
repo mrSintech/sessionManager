@@ -25,3 +25,6 @@ ReserveMinSecInvalid    = 'ساعت جلسه باید رند و کامل باش�
 ReserveTimeRangeInvalid = 'ساعات مجاز برای رزرو از {} تا {} است'.format(settings.SESSION_START_TIME, settings.SESSION_END_TIME)
 ReserveNotFound         = 'رزرو یافت نشد'
 ReserveIsDone           = 'جلسات به پایان رسیده امکان حذف ندارند'
+
+# Admin
+PhonenumberConflict = 'شماره موبایل وارد شده قبلا ثبت شده است'

@@ -62,6 +62,9 @@ def georgian_to_persian(date, kind='obj'):
     
     return jalili_date
 
+def str2bool(word):
+    return word.lower() in ("true", "yes", "1")
+
 def response_prepare(msg_container, success, data):
     # Preparing messages for app response
     if msg_container == None:

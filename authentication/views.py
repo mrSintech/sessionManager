@@ -25,6 +25,7 @@ from .serializers import *
 # Exceptions
 from django.utils.datastructures import MultiValueDictKeyError
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
 
 # Tools
 from core import validation_msg
@@ -177,8 +178,7 @@ class AdminLogin(viewsets.ViewSet):
         
         if is_valid:  
             # Authenticate user  
-            username = User.objects.get(phone_no__number=number).username
-            user     = authenticate(username=username, password=password)
+            user = authenticate(username=number, password=password)
             
             if user:
                 # Checking user admin
@@ -191,6 +191,8 @@ class AdminLogin(viewsets.ViewSet):
                 if is_valid:
                     # admin authenticated, getting JWT
                     token = tools.JwtTools().generate_jwt(user)
+                    
+                    # SUCCESS
                     res = tools.response_prepare(messages, True, token)
                     return Response(res)
             
@@ -198,9 +200,10 @@ class AdminLogin(viewsets.ViewSet):
                 is_valid = False
                 messages.append(validation_msg.LoginIncorrect)
         
+        # FAIL
         res = tools.response_prepare(messages, False, None)
         return Response(res)
-    
+
 class DepartmentViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated,]
     
@@ -213,7 +216,8 @@ class AdminAddUserViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated, IsStaff]
 
     def create(self, request):
-        return Response(request.POST)
+        is_valid = True
+        messages = []
         
         # gather data
         try:
@@ -229,4 +233,43 @@ class AdminAddUserViewSet(viewsets.ViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
             
-        return Response({'tst':first_name})
+        # validating phonenumber
+        number = tools.validate_phonenumber(number)
+        if number == 'err':
+            is_valid = False
+            messages.append(validation_msg.WrongPhoneNumber)
+        
+        if is_valid: 
+            # create and validate phonenumber
+            try:
+                number = UserPhoneNumber(number=number)
+                number.save()
+                
+            except IntegrityError:
+                is_valid = False
+                messages.append(validation_msg.PhonenumberConflict)
+            
+            if is_valid:
+                department = Departman.objects.get(id=department)
+                # create user
+                user = User(
+                    first_name=first_name,
+                    last_name=last_name,
+                    phone_no=number,
+                    departman=department
+                )
+                user.save()
+                              
+                # check admin field
+                if tools.str2bool(is_admin):
+                    admin = Admin(
+                        user=user,
+                    ).save()
+
+                # SUCCESS
+                res = tools.response_prepare(messages, True, None)
+                return Response(res)
+        
+        # FAIL
+        res = tools.response_prepare(messages, False, None)
+        return Response(res)
