@@ -108,6 +108,7 @@ class ReserveSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'is_done',
+            'title',
             'duration',
             'execute_datetime',
             'room'

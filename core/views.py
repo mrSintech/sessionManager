@@ -142,7 +142,7 @@ class RoomViewSet(viewsets.ViewSet):
         
         return is_valid
     
-    def tz_free_date(self, date):
+    def _tz_free_date(self, date):
         tz = pytz.timezone('Asia/Tehran')  
         date = date.split('.')
         date = datetime.datetime.strptime(date[0], "%Y-%m-%dT%H:%M:%S")
@@ -153,7 +153,6 @@ class RoomViewSet(viewsets.ViewSet):
         is_valid = True
         self.messages = []
         
-        # messages.append(request.POST)
         # Gather data
         try:
             # load reserve json
@@ -183,11 +182,11 @@ class RoomViewSet(viewsets.ViewSet):
         
         if is_valid:
             # timezone process
-            start = self.tz_free_date(start)
-            end   = self.tz_free_date(end)
-            user  = request.user
+            start = self._tz_free_date(start)
+            end   = self._tz_free_date(end)
             
             # validate reserve
+            user  = request.user
             is_valid = self._reserve_validations(user, start, end, room)
 
             if is_valid:
@@ -200,7 +199,8 @@ class RoomViewSet(viewsets.ViewSet):
                     duration=self.duration
                 )
                 reserve.save()
-                            
+                
+                # SUCCESS      
                 res = tools.response_prepare(self.messages, True, None)
                 return Response(res)
         

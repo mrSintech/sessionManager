@@ -70,7 +70,7 @@ def response_prepare(msg_container, success, data):
     else:
         msg = ''
         for item in msg_container:
-            msg = str(msg)+str(item)+'\n'
+            msg = str(msg)+str(item)+'--'
         
     res = {
         'success'  : success,
