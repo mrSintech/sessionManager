@@ -120,7 +120,7 @@ class RoomViewSet(viewsets.ViewSet):
         # reserve duration 
         self.duration = (end - start).total_seconds() / 3600
         
-        if duration > settings.MAX_SESSION_TIME:
+        if self.duration > settings.MAX_SESSION_TIME:
             is_valid = False
             self.messages.append(validation_msg.ReserveTimeLimited)
             
