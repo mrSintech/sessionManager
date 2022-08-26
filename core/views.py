@@ -135,12 +135,12 @@ class RoomViewSet(viewsets.ViewSet):
                 is_valid = False
                 messages.append(validation_msg.ReserveInPastNotAllowed)
                 
-            # # check reserve duration limit
-            # duration = (end - start).total_seconds() / 3600
+            # check reserve duration limit
+            duration = (end - start).total_seconds() / 3600
             
-            # if duration > settings.MAX_SESSION_TIME:
-            #     is_valid = False
-            #     messages.append(validation_msg.ReserveTimeLimited)
+            if duration > settings.MAX_SESSION_TIME:
+                is_valid = False
+                messages.append(validation_msg.ReserveTimeLimited)
             
             # # check day of reserve be close
             # max_date = current_time + datetime.timedelta(days=settings.MAX_DAY_RANGE_TO_RESERVE)
