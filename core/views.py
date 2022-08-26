@@ -217,8 +217,28 @@ class AdminReserves(viewsets.ViewSet):
     permission_classes = [IsAuthenticated, IsStaff]
     
     def list(self, request):
-        reserves   = Reserve.objects.filter(is_done=False).order_by('-execute_datetime')
+        reserves   = Reserve.objects.filter(
+            is_done=False).order_by('-execute_datetime')
         serializer = ReserveSerializer(reserves, many=True)
         
         return Response(serializer.data)
+    
+    def destroy(self, request):
+        try:
+            reserve = request.query_params['pk']
+        
+        except MultiValueDictKeyError:
+            return Response(
+                {'message':'required parameters missed!'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        reserve = Reserve.objects.get(id=reserve)
+        
+        reserve.delete()
+        
+        res = tools.response_prepare(None, True, None)
+        return Response(res)
+        
+        
         
