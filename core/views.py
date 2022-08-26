@@ -148,19 +148,19 @@ class RoomViewSet(viewsets.ViewSet):
                 is_valid = False
                 messages.append(validation_msg.ReserveDayRangeLimit)
             
-            # # check end be grater than start
-            # if start > end:
-            #     is_valid = False
-            #     messages.append(validation_msg.ReserveTimeInvalid)
+            # check end be grater than start
+            if start > end:
+                is_valid = False
+                messages.append(validation_msg.ReserveTimeInvalid)
             
-            # # check user's other sessions in the same day
-            # user     = request.user
-            # reserves = user.reserves.filter(
-            #     start_datetime__date = current_time.date()
-            # )
-            # if len(reserves) > settings.USER_MAX_SESSION_PER_DAY:
-            #     is_valid = False,
-            #     messages.append(validation_msg.ReserveCountPerDayLimit)
+            # check user's other sessions in the same day
+            user     = request.user
+            reserves = user.reserves.filter(
+                start_datetime__date = current_time.date()
+            )
+            if len(reserves) > settings.USER_MAX_SESSION_PER_DAY:
+                is_valid = False,
+                messages.append(validation_msg.ReserveCountPerDayLimit)
         
             # check round time
             
