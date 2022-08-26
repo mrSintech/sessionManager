@@ -128,32 +128,32 @@ class RoomViewSet(viewsets.ViewSet):
                 is_valid = False
                 messages.append(validation_msg.ReserveConflict)
                
-            current_time = datetime.datetime.now() 
-            # check reserve in past
-            time_dif = (start - current_time).total_seconds()
-            if time_dif < 0:
-                is_valid = False
-                messages.append(validation_msg.ReserveInPastNotAllowed)
+            # current_time = datetime.datetime.now() 
+            # # check reserve in past
+            # time_dif = (start - current_time).total_seconds()
+            # if time_dif < 0:
+            #     is_valid = False
+            #     messages.append(validation_msg.ReserveInPastNotAllowed)
                 
-            # check reserve duration limit
-            duration = (end - start).total_seconds() / 3600
+            # # check reserve duration limit
+            # duration = (end - start).total_seconds() / 3600
             
-            if duration > settings.MAX_SESSION_TIME:
-                is_valid = False
-                messages.append(validation_msg.ReserveTimeLimited)
+            # if duration > settings.MAX_SESSION_TIME:
+            #     is_valid = False
+            #     messages.append(validation_msg.ReserveTimeLimited)
             
-            # check day of reserve be close
-            max_date = current_time + datetime.timedelta(days=settings.MAX_DAY_RANGE_TO_RESERVE)
-            if end > settings.MAX_DAY_RANGE_TO_RESERVE:
-                is_valid = False
-                messages.append(validation_msg.ReserveDayRangeLimit)
+            # # check day of reserve be close
+            # max_date = current_time + datetime.timedelta(days=settings.MAX_DAY_RANGE_TO_RESERVE)
+            # if end > settings.MAX_DAY_RANGE_TO_RESERVE:
+            #     is_valid = False
+            #     messages.append(validation_msg.ReserveDayRangeLimit)
             
-            # check end be grater than start
-            if start > end:
-                is_valid = False
-                messages.append(validation_msg.ReserveTimeInvalid)
+            # # check end be grater than start
+            # if start > end:
+            #     is_valid = False
+            #     messages.append(validation_msg.ReserveTimeInvalid)
             
-            # check user's other sessions in the same day
+            # # check user's other sessions in the same day
             # user     = request.user
             # reserves = user.reserves.filter(
             #     start_datetime__date = current_time.date()
