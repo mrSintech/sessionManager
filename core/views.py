@@ -43,21 +43,6 @@ class UserRoomReserveViewSet(viewsets.ViewSet):
         
         return Response(serializer.data)
     
-class RoomViewSet(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated,]
-    
-    def list(self, request):
-        # Gathering data
-        rooms = SessionRoom.actives.all()
-        serializer = SessionRoomDemoSerializer(rooms, many=True)
-        
-        return Response(serializer.data)
-    
-    def retrieve(self, request, pk):
-        room = SessionRoom.actives.get(id=pk)
-        serializer = SessionRoomDetailSerializer(room)
-        return Response(serializer.data)
-   
     def _conflict_validator(self, start, end, room):
         is_valid = True
         reserve_conflicts = Reserve.objects.filter(
@@ -221,6 +206,21 @@ class RoomViewSet(viewsets.ViewSet):
         res = tools.response_prepare(self.messages, False, None)
         return Response(res)
     
+class RoomViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated,]
+    
+    def list(self, request):
+        # Gathering data
+        rooms = SessionRoom.actives.all()
+        serializer = SessionRoomDemoSerializer(rooms, many=True)
+        
+        return Response(serializer.data)
+    
+    def retrieve(self, request, pk):
+        room = SessionRoom.actives.get(id=pk)
+        serializer = SessionRoomDetailSerializer(room)
+        return Response(serializer.data)
+  
 class AdminReserves(viewsets.ViewSet):
     permission_classes = [IsAuthenticated, IsStaff]
     
