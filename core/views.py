@@ -109,7 +109,7 @@ class RoomViewSet(viewsets.ViewSet):
             self.messages.append(validation_msg.ReserveInPastNotAllowed)
             
         # check end be grater than start
-        if start < end:
+        if start > end:
             is_valid = False
             self.messages.append(validation_msg.ReserveTimeInvalid)
             
