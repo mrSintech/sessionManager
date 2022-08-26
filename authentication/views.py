@@ -177,8 +177,15 @@ class AdminLogin(viewsets.ViewSet):
             username = User.objects.get(phone_no__number=number).username
             user     = authenticate(username=username, password=password)
             
-            if user:
-                # user authenticated, getting JWT
+            # Checking admin
+            try:
+                user.admin
+                
+            except ObjectDoesNotExist:
+                is_valid = False
+            
+            if user and is_valid:
+                # admin authenticated, getting JWT
                 token = tools.JwtTools().generate_jwt(user)
                 res = tools.response_prepare(messages, True, token)
                 return Response(res)
