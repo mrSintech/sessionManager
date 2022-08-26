@@ -13,6 +13,9 @@ from rest_framework.permissions import (
 from django.contrib.sessions.models import Session
 from django.contrib.auth import authenticate
 
+# Permissions
+from core.permissions import IsStaff
+
 # Models
 from .models import *
 
@@ -197,3 +200,4 @@ class AdminLogin(viewsets.ViewSet):
         
         res = tools.response_prepare(messages, False, None)
         return Response(res)
+    

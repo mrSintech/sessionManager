@@ -14,6 +14,8 @@ from rest_framework.permissions import (
 from .models import *
 from django.db.models import Q
 
+# Permissions
+from .permissions import IsStaff
 
 # Serializers
 from .serializers import *
@@ -211,3 +213,12 @@ class RoomViewSet(viewsets.ViewSet):
         res = tools.response_prepare(self.messages, False, None)
         return Response(res)
     
+class AdminReserves(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated, IsStaff]
+    
+    def list(self, request):
+        reserves   = Reserve.objects.filter(is_done=False)
+        serializer = ReserveSerializer(reserves)
+        
+        return serializer.data
+        
