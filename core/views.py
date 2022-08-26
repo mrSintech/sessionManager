@@ -218,7 +218,7 @@ class AdminReserves(viewsets.ViewSet):
     
     def list(self, request):
         reserves   = Reserve.objects.filter(is_done=False)
-        serializer = ReserveSerializer(reserves)
+        serializer = ReserveSerializer(reserves, many=True)
         
-        return serializer.data
+        return Response(serializer.data)
         
