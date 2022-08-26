@@ -135,6 +135,9 @@ class RoomViewSet(viewsets.ViewSet):
             end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
             end = end.astimezone(tz=tz).replace(tzinfo=None)
             
+            messages.append(start)
+            messages.append(end)
+            
             # check other reserve conflicts
             if not self.conflict_validator(start, end, room):
                 is_valid = False
