@@ -188,7 +188,7 @@ class RoomViewSet(viewsets.ViewSet):
             user  = request.user
             
             # validate reserve
-            is_valid = self.reserve_validations(start, request, end, room)
+            is_valid = self.reserve_validations(start, user, end, room)
  
             if is_valid:
                 reserve = Reserve(
