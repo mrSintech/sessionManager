@@ -129,14 +129,11 @@ class RoomViewSet(viewsets.ViewSet):
             tz = pytz.timezone('Asia/Tehran')  
             start = start.split('.')
             start = datetime.datetime.strptime(start[0], "%Y-%m-%dT%H:%M:%S")
-            sstart = start.astimezone(tz=tz).replace(tzinfo=None)
+            start = start.astimezone(tz=tz).replace(tzinfo=None)
             
             end = end.split('.')
             end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
             end = end.astimezone(tz=tz).replace(tzinfo=None)
-            
-            messages.append(start)
-            messages.append(end)
             
             # check other reserve conflicts
             if not self.conflict_validator(start, end, room):
