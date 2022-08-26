@@ -189,10 +189,6 @@ class RoomViewSet(viewsets.ViewSet):
             
             # validate reserve
             is_valid = self._reserve_validations(user, start, end, room)
-        
-        if duration > settings.MAX_SESSION_TIME:
-            is_valid = False
-            self.messages.append(validation_msg.ReserveTimeLimited)
 
             if is_valid:
                 reserve = Reserve(
