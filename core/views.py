@@ -147,7 +147,7 @@ class RoomViewSet(viewsets.ViewSet):
             or end.hour > settings.SESSION_END_TIME:
                 
             is_valid = False
-            self.messages.append(validation_msg.ReserveMinSecInvalid)
+            self.messages.append(validation_msg.ReserveTimeRangeInvalid)
         
         # return    
         return is_valid
