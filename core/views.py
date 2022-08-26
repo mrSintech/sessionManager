@@ -167,18 +167,19 @@ class RoomViewSet(viewsets.ViewSet):
             
             # calculate duration
             
-            reserve = Reserve(
-                title=title,
-                reservatore=user,
-                room=room,
-                execute_datetime=start,
-                end_datetime=end,
-                duration=duration
-            )
-            reserve.save()
-                        
-            res = tools.response_prepare(messages, True, None)
-            return Response(res)
+            if is_valid:
+                reserve = Reserve(
+                    title=title,
+                    reservatore=user,
+                    room=room,
+                    execute_datetime=start,
+                    end_datetime=end,
+                    duration=duration
+                )
+                reserve.save()
+                            
+                res = tools.response_prepare(messages, True, None)
+                return Response(res)
         
         else: # no reserve date selected
             messages.append(validation_msg.ReserveNoDateSelected) 
