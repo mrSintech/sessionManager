@@ -57,6 +57,7 @@ class RoomViewSet(viewsets.ViewSet):
         return Response(serializer.data)
    
     def _conflict_validator(self, start, end, room):
+        is_valid = True
         reserve_conflicts = Reserve.objects.filter(
             (
                 Q(room=room) &
@@ -86,10 +87,9 @@ class RoomViewSet(viewsets.ViewSet):
             )
         )
         if len(reserve_conflicts) != 0:
-            return False
+            is_valid = False
         
-        else:
-            return True
+        return is_valid
         
     def _reserve_validations(self, user, start, end, room):
         is_valid = True
@@ -129,7 +129,7 @@ class RoomViewSet(viewsets.ViewSet):
             execute_datetime__date = start.date()
         )
         if len(reserves) >= settings.USER_MAX_SESSION_PER_DAY:
-            is_valid = False,
+            is_valid = False
             self.messages.append(validation_msg.ReserveCountPerDayLimit)
             
         # check round time
