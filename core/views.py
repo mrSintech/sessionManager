@@ -185,7 +185,7 @@ class RoomViewSet(viewsets.ViewSet):
             # timezone process
             start = self.tz_free_date(start)
             end   = self.tz_free_date(end)
-            user  = request.user.prefetch_related('reserves')
+            user  = request.user
             
             # validate reserve
             is_valid = self._reserve_validations(start, request, end, room)
