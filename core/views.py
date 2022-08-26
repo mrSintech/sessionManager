@@ -90,28 +90,86 @@ class RoomViewSet(viewsets.ViewSet):
         
         else:
             return True
+        
+    def reserve_validations(self, start, end):
+        is_valid = True
+        
+        current_time = datetime.datetime.now() 
+        # check reserve conflicts
+        if not self.conflict_validator(start, end, room):
+            is_valid = False
+            self.messages.append(validation_msg.ReserveConflict)
+        
+        # check reserve in past
+        time_dif = (start - current_time).total_seconds()
+        if time_dif < 0:
+            is_valid = False
+            self.messages.append(validation_msg.ReserveInPastNotAllowed)
+            
+        # check end be grater than start
+        if start > end:
+            is_valid = False
+            self.messages.append(validation_msg.ReserveTimeInvalid)
+            
+        # check reserve duration limit
+        duration = (end - start).total_seconds() / 3600
+        
+        if duration > settings.MAX_SESSION_TIME:
+            is_valid = False
+            self.messages.append(validation_msg.ReserveTimeLimited)
+            
+        # check day of reserve be close
+        max_date = current_time + datetime.timedelta(days=settings.MAX_DAY_RANGE_TO_RESERVE)
+        if end.date() > max_date.date():
+            is_valid = False
+            self.messages.append(validation_msg.ReserveDayRangeLimit)
+            
+        # check user's other sessions in the same day
+        user     = request.user
+        reserves = user.reserves.filter(
+            execute_datetime__date = start.date()
+        )
+        if len(reserves) >= settings.USER_MAX_SESSION_PER_DAY:
+            is_valid = False,
+            self.messages.append(validation_msg.ReserveCountPerDayLimit)
+            
+        # check round time
+        if start.minute != 0 \
+            or start.second != 0 \
+            or end.minute != 0 \
+            or end.second != 0:
+                is_valid = False
+                self.messages.append(validation_msg.ReserveMinSecInvalid)
+        
+        return is_valid
+    
+    def tz_free_date(self, date):
+        tz = pytz.timezone('Asia/Tehran')  
+        date = date.split('.')
+        date = datetime.datetime.strptime(date[0], "%Y-%m-%dT%H:%M:%S")
+        date = date.astimezone(tz=tz).replace(tzinfo=None)
+        return date
             
     def create(self, request):
         is_valid = True
-        messages = []
+        self.messages = []
         
         # messages.append(request.POST)
         # Gather data
         try:
+            # load reserve json
             reserves = request.POST['session']
-            room     = request.POST['room']
+            reserves = json.loads(reserves)
             
+            room     = request.POST['room']
+            room = SessionRoom.actives.get(id=room)
+               
         except MultiValueDictKeyError:
             return Response(
                 {'message':'required parameters missed!'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
-        room = SessionRoom.actives.get(id=room)
-        
-        # load json
-        reserves = json.loads(reserves)
-        
+ 
         # check for new session
         is_valid = False
         for reserve in reserves:
@@ -125,63 +183,13 @@ class RoomViewSet(viewsets.ViewSet):
                 is_valid = True
         
         if is_valid:
-            # timezone process # TODO: refactor
-            tz = pytz.timezone('Asia/Tehran')  
-            start = start.split('.')
-            start = datetime.datetime.strptime(start[0], "%Y-%m-%dT%H:%M:%S")
-            start = start.astimezone(tz=tz).replace(tzinfo=None)
-            
-            end = end.split('.')
-            end = datetime.datetime.strptime(end[0], "%Y-%m-%dT%H:%M:%S")
-            end = end.astimezone(tz=tz).replace(tzinfo=None)
-            
-            # check other reserve conflicts
-            if not self.conflict_validator(start, end, room):
-                is_valid = False
-                messages.append(validation_msg.ReserveConflict)
-               
-            current_time = datetime.datetime.now() 
-            # check reserve in past
-            time_dif = (start - current_time).total_seconds()
-            if time_dif < 0:
-                is_valid = False
-                messages.append(validation_msg.ReserveInPastNotAllowed)
-                
-            # check reserve duration limit
-            duration = (end - start).total_seconds() / 3600
-            
-            if duration > settings.MAX_SESSION_TIME:
-                is_valid = False
-                messages.append(validation_msg.ReserveTimeLimited)
-            
-            # check day of reserve be close
-            max_date = current_time + datetime.timedelta(days=settings.MAX_DAY_RANGE_TO_RESERVE)
-            if end.date() > max_date.date():
-                is_valid = False
-                messages.append(validation_msg.ReserveDayRangeLimit)
-            
-            # check end be grater than start
-            if start > end:
-                is_valid = False
-                messages.append(validation_msg.ReserveTimeInvalid)
-            
-            # check user's other sessions in the same day
-            user     = request.user
-            reserves = user.reserves.filter(
-                execute_datetime__date = start.date()
-            )
-            if len(reserves) >= settings.USER_MAX_SESSION_PER_DAY:
-                is_valid = False,
-                messages.append(validation_msg.ReserveCountPerDayLimit)
+            # timezone process
+            start = self.tz_free_date(start)
+            end   = self.tz_free_date(end)
         
-            # check round time
-            if start.minute != 0 \
-                or start.second != 0 \
-                or end.minute != 0 \
-                or end.second != 0:
-                    is_valid = False
-                    messages.append(validation_msg.ReserveMinSecInvalid)
-            
+            # validate reserve
+            is_valid = self.reserve_validations(start, end)
+ 
             if is_valid:
                 reserve = Reserve(
                     title=title,
@@ -193,13 +201,13 @@ class RoomViewSet(viewsets.ViewSet):
                 )
                 reserve.save()
                             
-                res = tools.response_prepare(messages, True, None)
+                res = tools.response_prepare(self.messages, True, None)
                 return Response(res)
         
         else: # no reserve date selected
-            messages.append(validation_msg.ReserveNoDateSelected) 
+            self.messages.append(validation_msg.ReserveNoDateSelected) 
         
         # FAIL
-        res = tools.response_prepare(messages, False, None)
+        res = tools.response_prepare(self.messages, False, None)
         return Response(res)
     
