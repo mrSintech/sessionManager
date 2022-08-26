@@ -201,3 +201,10 @@ class AdminLogin(viewsets.ViewSet):
         res = tools.response_prepare(messages, False, None)
         return Response(res)
     
+class DepartmentViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated,]
+    
+    def list(self, request):
+        departments = Departman.objects.all()
+        serializer = DepartmentSeralizer(departments, many=True)
+        return Response(serializer.data)

@@ -8,9 +8,10 @@ from . import views
 
 router = routers.DefaultRouter()
 
-router.register('login',   views.UserLogin,   'login')
-router.register('verify',  views.LoginVerify, 'verify')
-router.register('a_login', views.AdminLogin,  'a-login')
+router.register('login',       views.UserLogin,          'login')
+router.register('verify',      views.LoginVerify,        'verify')
+router.register('a_login',     views.AdminLogin,         'a-login')
+router.register('departments', views.DepartmentViewSet,  'departments')
 
 app_name = 'auth_api'
 urlpatterns = [
