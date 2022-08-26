@@ -208,3 +208,23 @@ class DepartmentViewSet(viewsets.ViewSet):
         departments = Departman.objects.all()
         serializer = DepartmentSeralizer(departments, many=True)
         return Response(serializer.data)
+
+class AdminAddUserViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated, IsStaff]
+
+    def create(self, request):
+        # gather data
+        try:
+            is_admin   = request.POST['is_staff']
+            first_name = request.POST['first_name']
+            last_name  = request.POST['last_name']
+            number     = request.POST['number']
+            department = request.POST['department']
+            
+        except ObjectDoesNotExist:
+            return Response(
+                {'message':'required parameters missed!'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        return Response({'tst':first_name})
