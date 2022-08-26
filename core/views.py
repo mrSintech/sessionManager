@@ -91,7 +91,7 @@ class RoomViewSet(viewsets.ViewSet):
         else:
             return True
         
-    def reserve_validations(self, start, end):
+    def reserve_validations(self, start, end, room):
         is_valid = True
         
         current_time = datetime.datetime.now() 
@@ -161,7 +161,7 @@ class RoomViewSet(viewsets.ViewSet):
             reserves = request.POST['session']
             reserves = json.loads(reserves)
             
-            room     = request.POST['room']
+            room = request.POST['room']
             room = SessionRoom.actives.get(id=room)
                
         except MultiValueDictKeyError:
@@ -188,7 +188,7 @@ class RoomViewSet(viewsets.ViewSet):
             end   = self.tz_free_date(end)
         
             # validate reserve
-            is_valid = self.reserve_validations(start, end)
+            is_valid = self.reserve_validations(start, end, room)
  
             if is_valid:
                 reserve = Reserve(
