@@ -12,6 +12,7 @@ router.register('login',       views.UserLogin,          'login')
 router.register('verify',      views.LoginVerify,        'verify')
 router.register('a_login',     views.AdminLogin,         'a-login')
 router.register('departments', views.DepartmentViewSet,  'departments')
+router.register('add_user',    views.AdminAddUserViewSet,'add_user')
 
 app_name = 'auth_api'
 urlpatterns = [
