@@ -111,18 +111,18 @@ class RoomViewSet(viewsets.ViewSet):
             is_valid = False
             self.messages.append(validation_msg.ReserveTimeInvalid)
             
-        # check reserve duration limit
-        duration = (end - start).total_seconds() / 3600
-        
-        if duration > settings.MAX_SESSION_TIME:
-            is_valid = False
-            self.messages.append(validation_msg.ReserveTimeLimited)
-            
         # check day of reserve be close
         max_date = current_time + datetime.timedelta(days=settings.MAX_DAY_RANGE_TO_RESERVE)
         if end.date() > max_date.date():
             is_valid = False
             self.messages.append(validation_msg.ReserveDayRangeLimit)
+            
+        # reserve duration 
+        self.duration = (end - start).total_seconds() / 3600
+        
+        if duration > settings.MAX_SESSION_TIME:
+            is_valid = False
+            self.messages.append(validation_msg.ReserveTimeLimited)
             
         # check user's other sessions in the same day
         reserves = user.reserves.filter(
@@ -189,7 +189,11 @@ class RoomViewSet(viewsets.ViewSet):
             
             # validate reserve
             is_valid = self.reserve_validations(user, start, end, room)
- 
+        
+        if duration > settings.MAX_SESSION_TIME:
+            is_valid = False
+            self.messages.append(validation_msg.ReserveTimeLimited)
+
             if is_valid:
                 reserve = Reserve(
                     title=title,
@@ -197,7 +201,7 @@ class RoomViewSet(viewsets.ViewSet):
                     room=room,
                     execute_datetime=start,
                     end_datetime=end,
-                    duration=duration
+                    duration=self.duration
                 )
                 reserve.save()
                             
