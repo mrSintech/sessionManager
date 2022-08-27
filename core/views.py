@@ -102,7 +102,7 @@ class UserRoomReserveViewSet(viewsets.ViewSet):
         max_date = current_time + datetime.timedelta(days=settings.MAX_DAY_RANGE_TO_RESERVE)
         if end.date() > max_date.date():
             is_valid = False
-            self.messages.append(validation_msg.ReserveDayRangeLimit)
+            self.messages.append(validation_msg.ReserveDayRangeLimit) 
             
         # reserve duration 
         self.duration = (end - start).total_seconds() / 3600
