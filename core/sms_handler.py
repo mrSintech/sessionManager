@@ -4,7 +4,8 @@ from decouple import config
 class SendSms:
 
     def __init__(self):
-        self.apikey     = config('FARAZ_SMS_APIKEY')
+        # self.apikey     = config('FARAZ_SMS_APIKEY')
+        self.apikey     = '8cJs8Buxicu4EqoY_73cxoSQ5hg0wMDnt3hEGGj6P4s='
         self.sender_num = '3000505'
         self.url = 'http://ippanel.com:8080/?apikey={}&fnum={}'.format(
             self.apikey, 
