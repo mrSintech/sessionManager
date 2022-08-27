@@ -12,7 +12,7 @@ class SendSms:
         )
     
     def send_login_sms(self, receiver, verification):
-        pattern = 'zs0tc0rf0k'
+        pattern = '52sntjoz8r171bf'
         
         # shaping request
         self.url = self.url + \
