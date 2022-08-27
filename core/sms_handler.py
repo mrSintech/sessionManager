@@ -6,7 +6,7 @@ class SendSms:
     def __init__(self):
         self.apikey     = config('FARAZ_SMS_APIKEY')
         self.sender_num = '3000505'
-        self.url = 'https://ippanel.com:8080/?apikey={}&fnum={}'.format(
+        self.url = 'http://ippanel.com:8080/?apikey={}&fnum={}'.format(
             self.apikey, 
             self.sender_num
         )
