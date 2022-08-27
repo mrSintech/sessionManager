@@ -1,14 +1,15 @@
 import requests
+from decouple import config
 
 class SendSms:
-    # apikey     = '8cJs8Buxicu4EqoY_73cxoSQ5hg0wMDnt3hEGGj6P4s='
-    # sender_num = '3000505'
-    # url        = 'http://ippanel.com:8080/?apikey={}&fnum={}'.format(apikey, sender_num)
-    
+
     def __init__(self):
-        self.apikey     = '8cJs8Buxicu4EqoY_73cxoSQ5hg0wMDnt3hEGGj6P4s='
+        self.apikey     = config('FARAZ_SMS_APIKEY')
         self.sender_num = '3000505'
-        self.url        = 'http://ippanel.com:8080/?apikey={}&fnum={}'.format(self.apikey, self.sender_num)
+        self.url = 'http://ippanel.com:8080/?apikey={}&fnum={}'.format(
+            self.apikey, 
+            self.sender_num
+        )
     
     def send_login_sms(self, receiver, verification):
         pattern = 'zs0tc0rf0k'

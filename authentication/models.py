@@ -17,7 +17,7 @@ class User(AbstractUser):
     email    = models.EmailField(blank=True, null=True, unique = True)
     phone_no = models.OneToOneField(
         'authentication.UserPhoneNumber',
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name='user',
     )
     
@@ -37,13 +37,16 @@ class User(AbstractUser):
 class Admin(models.Model):
     user = models.OneToOneField(
         'authentication.User',                 
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name='admin'
     )
+    
+    permissions = models.CharField(max_length=255, default='demo')
+
     date_created = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return self.user.phone_no.number
+        return "{} - {}".format(self.id, self.user.username)
 
 class Departman(models.Model):
     title       = models.CharField(max_length=50)
@@ -59,12 +62,12 @@ class UserPhoneNumber(models.Model):
     country_code = models.CharField(max_length=4, default='+98')
     number       = models.CharField(max_length=10, unique=True, db_index=True)
     
-    # def __str__(self):
-    #     return "{} - {} {} {}".format(
-    #         self.id, 
-    #         self.number,
-    #         self.user.first_name,
-    #         self.user.last_name,
-    #     )
+    def __str__(self):
+        return "{} - {} {} {}".format(
+            self.id, 
+            self.number,
+            self.user.first_name,
+            self.user.last_name,
+        )
     
     

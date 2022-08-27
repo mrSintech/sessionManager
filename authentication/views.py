@@ -83,7 +83,7 @@ class UserLogin(viewsets.ViewSet):
                 # Send sms
                 send_auth_sms.delay(number, code)
                 
-                # data serialize
+                # serialize data
                 data = {
                     'username' : user.username,
                     'phonenumber' : number,
@@ -97,8 +97,7 @@ class UserLogin(viewsets.ViewSet):
                 res = tools.response_prepare(messages, True, json_data)
                 return Response(res)
             
-            
-        # Fail
+        # FAIL
         res = tools.response_prepare(messages, False, None)
         return Response(res)
       
@@ -256,7 +255,8 @@ class AdminAddUserViewSet(viewsets.ViewSet):
                     first_name=first_name,
                     last_name=last_name,
                     phone_no=number,
-                    departman=department
+                    departman=department,
+                    password='123456789'
                 )
                 user.save()
                               

@@ -181,10 +181,11 @@ class UserRoomReserveViewSet(viewsets.ViewSet):
             end   = self._tz_free_date(end)
             
             # validate reserve
-            user  = request.user
+            user     = request.user
             is_valid = self._reserve_validations(user, start, end, room)
 
             if is_valid:
+                # Create Reserve model
                 reserve = Reserve(
                     title=title,
                     reservatore=user,
@@ -247,6 +248,8 @@ class UserRoomReserveViewSet(viewsets.ViewSet):
         else:
             is_valid = False
             messages.append(validation_msg.ReserveNotFound)
+            
+            # Access denied
             res = tools.response_prepare(messages, False, None)
             return Response(res, status=status.HTTP_403_FORBIDDEN)
             
@@ -289,7 +292,13 @@ class AdminReserves(viewsets.ViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        reserve = Reserve.objects.get(id=reserve)
+        # get reserve model
+        try:
+            reserve = Reserve.objects.get(id=reserve)
+            
+        except ObjectDoesNotExist:
+            is_valid = False
+            messages.append(validation_msg.ReserveNotFound)
         
         reserve.delete()
         
