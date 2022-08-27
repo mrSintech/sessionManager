@@ -25,7 +25,7 @@ class SendSms:
         # send request
         response = requests.get(self.url)
         
-        return response
+        return response 
             
         
             
