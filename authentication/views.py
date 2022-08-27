@@ -255,9 +255,9 @@ class AdminAddUserViewSet(viewsets.ViewSet):
                     first_name=first_name,
                     last_name=last_name,
                     phone_no=number,
-                    departman=department,
-                    password='123456789'
+                    departman=department
                 )
+                user.set_password('123456789')
                 user.save()
                               
                 # check admin field
