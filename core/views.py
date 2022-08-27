@@ -88,7 +88,7 @@ class UserRoomReserveViewSet(viewsets.ViewSet):
             self.messages.append(validation_msg.ReserveConflict)
         
         # check reserve in past
-        time_dif = (start - current_time).total_seconds()
+        time_dif = (start - current_time.astimezone(tz=self.tz)).total_seconds()
         if time_dif < 0:
             is_valid = False
             self.messages.append(validation_msg.ReserveInPastNotAllowed)
@@ -138,10 +138,9 @@ class UserRoomReserveViewSet(viewsets.ViewSet):
         return is_valid
     
     def _tz_free_date(self, date):
-        tz = pytz.timezone('Asia/Tehran')  
         date = date.split('.')
         date = datetime.datetime.strptime(date[0], "%Y-%m-%dT%H:%M:%S")
-        date = date.astimezone(tz=tz).replace(tzinfo=None)
+        date = date.astimezone(tz=self.tz).replace(tzinfo=None)
         return date
             
     def create(self, request):
@@ -177,6 +176,7 @@ class UserRoomReserveViewSet(viewsets.ViewSet):
         
         if is_valid:
             # timezone process
+            self.tz = pytz.timezone('Asia/Tehran')  
             start = self._tz_free_date(start)
             end   = self._tz_free_date(end)
             
