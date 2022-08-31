@@ -1,3 +1,5 @@
 run_tests:
+  before_script:
+    - source .venv/manager/bin/activate
   script:
     - python3 manage.py test
