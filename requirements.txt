@@ -16,6 +16,7 @@ django-phonenumber-field==6.3.0
 django-restframework==0.0.1
 djangorestframework==3.13.1
 djangorestframework-simplejwt==5.2.0
+ez-setup==0.9
 idna==3.3
 iniconfig==1.1.1
 jdatetime==4.1.0
