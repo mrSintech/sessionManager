@@ -73,8 +73,8 @@ class UserLogin(viewsets.ViewSet):
                 token = tools.JwtTools.generate_jwt(user)
                 code  = tools.random_code_generator(4)
                 token_data = {
-                    'sms_code'     : code,
-                    'login'        : token
+                    'sms_code' : code,
+                    'login'    : token
                 }
                 
                 # Create Session Token

@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'core.apps.CoreConfig',
     'authentication.apps.AuthenticationConfig',
-    'phonenumber_field',
 ]
 
 MIDDLEWARE = [
