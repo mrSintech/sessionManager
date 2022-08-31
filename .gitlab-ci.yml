@@ -1,4 +1,5 @@
 run_tests:
+  image: python:3.10.6-slim-buster
   before_script:
     - source .venv/manager/bin/activate
   script:
