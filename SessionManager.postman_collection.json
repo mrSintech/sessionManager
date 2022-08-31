@@ -1,0 +1,245 @@
+{
+	"info": {
+		"_postman_id": "a2847eaf-e16e-4aab-b420-0ea5273b3197",
+		"name": "SessionManager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11236149"
+	},
+	"item": [
+		{
+			"name": "General",
+			"item": [
+				{
+					"name": "Departmans",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/auth/departments/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"departments",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "number",
+									"value": "9137864883",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/auth/login/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoginVerify",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "token",
+									"value": "9137864883",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{localhost}}/auth/verify/",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"auth",
+								"verify",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AdminLogin",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reserves",
+			"item": [
+				{
+					"name": "ReservesList",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "AdminReserves",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/core/a_reserves/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"core",
+								"a_reserves",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Rooms",
+			"item": [
+				{
+					"name": "roomsList",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "RoomDetail",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Reserve",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/core/room/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"core",
+								"room",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "NewUser",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjYyNDEyNzAwLCJpYXQiOjE2NjE1NDg3MDAsImp0aSI6IjRiOTdmNmVlNmFhMzQ2YThiZDRjNWFjNzIzZTg0MWM0IiwidXNlcl9pZCI6MX0.aN13zO3uJ8NOEGDTWsxeEyiqZLEy7n5heipSgAd1xPg",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "localhost",
+			"value": "localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "server",
+			"value": "https://etc.adrenato.com",
+			"type": "string"
+		},
+		{
+			"key": "host",
+			"value": "https://etc.adrenato.com",
+			"type": "string"
+		}
+	]
+}
