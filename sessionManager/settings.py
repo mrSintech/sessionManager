@@ -100,7 +100,7 @@ DATABASES = {
         'NAME': 'session_manager_core',
         'USER': 'web_api',
         'PASSWORD': 'safepass',
-        'HOST': 'localhost',
+        'HOST': '188.121.121.112',
         'PORT': '5432',
     }
 }
