@@ -1,7 +1,6 @@
 run_tests:
   image: python:3.10-slim-buster
   before_script:
-    - apt update && apt install pkg-config
     - pip install -r requirements.txt
   script:
     - python3 manage.py test
