@@ -1,14 +1,11 @@
-services:
-  - postgres:14-alpine
-
 run_tests:
   image: python:3.10-slim-buster
   before_script:
     - apt-get update && apt-get install -y postgresql
-    # - apt-get install -y postgresql-client
     - apt-get install -y libpq-dev
     - apt-get install -y gcc python-dev
     - pip3 install -r requirements.txt
+
   script:
     - python3 manage.py test
   
