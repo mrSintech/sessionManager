@@ -1,7 +1,7 @@
 run_tests:
   image: python:3.10-slim-buster
   before_script:
-    - apt-get update && apt-get install postgresql
+    - apt-get update && apt-get install -y postgresql
     - pip install -r requirements.txt
   script:
     - python3 manage.py test
