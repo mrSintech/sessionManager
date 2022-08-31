@@ -81,7 +81,7 @@ class UserRoomReserveViewSet(viewsets.ViewSet):
     def _reserve_validations(self, user, start, end, room):
         is_valid = True
         
-        current_time = datetime.datetime.now() 
+        current_time = datetime.datetime.now()
         # check reserve conflicts
         if not self._conflict_validator(start, end, room):
             is_valid = False
@@ -118,7 +118,7 @@ class UserRoomReserveViewSet(viewsets.ViewSet):
         if len(reserves) >= settings.USER_MAX_SESSION_PER_DAY:
             is_valid = False
             self.messages.append(validation_msg.ReserveCountPerDayLimit)
-            
+        
         # check round time
         if start.minute != 0 \
             or start.second != 0 \
@@ -220,10 +220,10 @@ class UserRoomReserveViewSet(viewsets.ViewSet):
                 {'message':'required parameters missed!'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
+            
         # get reserve model
         try:
-            reserve = Reserve.objects.get(id=reserve)
+            reserve = Reserve.objects.select_related('reservatore').get(id=reserve)
             
         except ObjectDoesNotExist:
             is_valid = False

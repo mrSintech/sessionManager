@@ -62,6 +62,12 @@ def georgian_to_persian(date, kind='obj'):
     
     return jalili_date
 
+def tz_free_date(date):
+    date = date.split('.')
+    date = datetime.datetime.strptime(date[0], "%Y-%m-%dT%H:%M:%S")
+    date = date.astimezone(tz=self.tz).replace(tzinfo=None)
+    return date
+
 def str2bool(word):
     return word.lower() in ("true", "yes", "1")
 

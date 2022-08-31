@@ -110,7 +110,7 @@ class LoginVerify(viewsets.ViewSet):
         
         # Gathering data
         token = request.POST.get('token')
-        code = request.POST.get('code')
+        code  = request.POST.get('code')
         
         # Validating Data
         if tools.is_empty(token) or tools.is_empty(code):
@@ -145,7 +145,6 @@ class LoginVerify(viewsets.ViewSet):
                     messages.append(validation_msg.LoginSuccesful)
                     res = tools.response_prepare(messages, True, json_data)
                     return Response(res)
-                
             
         # FAIL
         res = tools.response_prepare(messages, False, None)

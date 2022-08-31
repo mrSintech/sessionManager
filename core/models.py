@@ -78,6 +78,7 @@ class SessionRoom(models.Model):
     
     date_created = models.DateTimeField(auto_now_add=True)
     
+    # Managers
     objects  = models.Manager()
     actives  = RoomActiveManager()
     
