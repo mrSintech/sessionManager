@@ -1,5 +1,6 @@
 import json
 import pytz
+import datetime
 
 # Rest Framework
 from rest_framework.response import Response
@@ -26,6 +27,9 @@ from core import tools
 
 # Dependencies
 from core import validation_msg
+
+# Tasks
+from .tasks import send_reminder_sms
 
 # Exceptions
 from django.utils.datastructures import MultiValueDictKeyError
@@ -195,6 +199,11 @@ class UserRoomReserveViewSet(viewsets.ViewSet):
                     duration=self.duration
                 )
                 reserve.save()
+                
+                # schedule reminder sms
+                number = user.phone_no.number
+                date = end - datetime.timedelta(minutes=10)
+                send_reminder_sms.apply_async((number, title), eta=date)
                 
                 # SUCCESS      
                 res = tools.response_prepare(self.messages, True, None)

@@ -100,6 +100,7 @@ DATABASES = {
         'USER': 'web_api',
         'PASSWORD': 'safepass',
         'HOST': '188.121.121.112',
+        # 'HOST': 'localhost',
         'PORT': '5432',
     }
 }

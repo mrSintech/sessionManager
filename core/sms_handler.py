@@ -26,7 +26,22 @@ class SendSms:
         response = requests.get(self.url)
         
         return response 
+    
+    def send_session_reminder(self, receiver, title):
+        pattern = 'mf7jc6o2bi5pimm'
             
+        # shaping request
+        self.url = self.url + \
+            '&tnum={}&pid={}&p1=title&v1={}'.format(
+                receiver, 
+                pattern, 
+                title
+            )
+            
+        # send request
+        response = requests.get(self.url)
+        
+        return response 
         
             
         
